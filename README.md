@@ -22,8 +22,11 @@ Every example documents its supported versions, setup, configuration, startup,
 and checks. Follow that example's README to run it; the repository root is not an
 application or a pnpm workspace.
 
-See [application conventions](apps/README.md). Example applications have not yet
-been added.
+See [application conventions](apps/README.md).
+
+## Examples
+
+- [Team tasks](apps/team-tasks/README.MD): build your first app with an agent; tasks, assignees, progress and role-based access.
 
 ## 示例组织方式
 
@@ -32,4 +35,4 @@ been added.
 - 各示例分别说明版本要求、安装配置、启动方法和验证步骤。
 - 运行示例时进入对应目录，按该项目的 README 操作。
 
-当前仓库已初始化目录约定，示例应用将陆续迁入。
+- [团队任务应用](apps/team-tasks/README.MD)：使用 Agent 搭建第一个应用，体验任务分配、进度与角色权限。
