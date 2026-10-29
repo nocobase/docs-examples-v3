@@ -27,3 +27,5 @@ See [application conventions](apps/README.md).
 ## Examples
 
 - [Team tasks](apps/team-tasks/README.MD): build your first app with an agent; tasks, assignees, progress and role-based access.
+
+- [Agents guide](apps/agents-guide/README.md): model conversations, business Skills, and Runner setup.
