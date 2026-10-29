@@ -1,6 +1,6 @@
 # Team tasks tutorial
 
-Runnable companion to [Build your first app](https://docs.nocobase.com/core/tutorials/build-your-first-feature-agent-first/) ([中文](https://docs.nocobase.com/zh-CN/core/tutorials/build-your-first-feature-agent-first/)). Created from the default NocoBase template `1.0.0-beta.84` on 2026-10-29, with the earlier tutorial's task modules adapted to this template. This directory is an independent application; run every command below here, not at the repository root.
+Runnable companion to [Build your first app](https://docs.nocobase.com/core/tutorials/build-your-first-feature-agent-first/) ([Chinese](https://docs.nocobase.com/zh-CN/core/tutorials/build-your-first-feature-agent-first/)). Created from the default NocoBase template `1.0.0-beta.84` on 2026-10-29, with the earlier tutorial's task modules adapted to this template. This directory is an independent application; run every command below here, not at the repository root.
 
 ## Run the example
 
