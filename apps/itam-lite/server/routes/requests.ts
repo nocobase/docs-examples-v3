@@ -187,6 +187,19 @@ export const requestRoutes: AppApiRouteContribution<Application> =
             request: (await service.present([row]))[0],
             view,
             actors: await workflows.actors(view.history.transitions),
+            // Which of the workflow's next steps this person's role allows. The page shows only these buttons; the fire
+            // route checks the same actions again, so a hidden button is never the only protection.
+            can: {
+              approve: !!(await service.optionalPolicy(
+                c.get('authz'),
+                'approve',
+              )),
+              issue: !!(await service.optionalPolicy(c.get('authz'), 'issue')),
+              withdraw: !!(await service.optionalPolicy(
+                c.get('authz'),
+                'withdraw',
+              )),
+            },
           },
         });
       },

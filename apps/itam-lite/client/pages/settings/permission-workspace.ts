@@ -34,7 +34,21 @@ export interface PermissionWorkspaceSelection {
 
 /** Add only business operations and configuration controls this application exposes. */
 export const permissionWorkspaceSelection: PermissionWorkspaceSelection = {
-  business: [],
+  business: [
+    {
+      type: 'composite',
+      id: 'devices',
+      actions: ['read', 'create', 'edit', 'delete'],
+      // Registering a device creates a record; it has no existing records to range over.
+      hiddenActionScopes: { create: ['devices'] },
+    },
+    {
+      type: 'composite',
+      id: 'deviceRequests',
+      actions: ['read', 'create', 'approve', 'issue', 'withdraw'],
+      hiddenActionScopes: { create: ['deviceRequests'] },
+    },
+  ],
   settings: [
     {
       id: 'authorization.permission-sets',
@@ -44,6 +58,7 @@ export const permissionWorkspaceSelection: PermissionWorkspaceSelection = {
       id: 'authorization.default-access',
       actions: ['read', 'create', 'update', 'delete'],
     },
+    { id: 'workflow-management', actions: ['read', 'update'] },
   ],
 };
 

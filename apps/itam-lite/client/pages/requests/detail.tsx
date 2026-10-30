@@ -182,9 +182,12 @@ export default function RequestDetailPage() {
   };
 
   const request = detail?.request;
-  // Buttons come from the workflow's own judgement of what can happen next, never from a hard-coded state check.
-  const available = order.filter((name) =>
-    detail?.view.available.some((item) => item.name === name && item.allowed),
+  // Buttons come from the workflow's own judgement of what can happen next, narrowed to the actions the person's role
+  // grants (rejecting is part of approving). The server refuses the rest anyway.
+  const available = order.filter(
+    (name) =>
+      detail?.can[name === 'reject' ? 'approve' : name] &&
+      detail.view.available.some((item) => item.name === name && item.allowed),
   );
   return (
     <RouteDrawer

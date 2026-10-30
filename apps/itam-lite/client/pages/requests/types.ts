@@ -58,6 +58,7 @@ export interface RequestDetail {
   request: DeviceRequest;
   view: RequestView;
   actors: Record<string, string>;
+  can: { approve: boolean; issue: boolean; withdraw: boolean };
 }
 
 export type { LifecycleDescription };
