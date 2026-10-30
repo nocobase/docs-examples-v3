@@ -1,0 +1,158 @@
+import { Link } from 'react-router';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import {
+  PendingSubmissionError,
+  SubmissionTimeoutError,
+  ApiClientError,
+} from '@nocobase/app-client';
+import { useTranslation, useLocale } from '@nocobase/i18n/client';
+import { Circle, CircleCheck, CircleDashed } from 'lucide-react';
+import { StatusBadge as SemanticStatusBadge } from '#components/status-badge';
+import { Alert, AlertDescription } from '#components/ui/alert';
+import { Button } from '#components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '#components/ui/tooltip';
+import type { CustomerStatus } from './types.js';
+export function StatusBadge({ status }: { status: CustomerStatus }) {
+  const { t } = useTranslation();
+  const Icon =
+    status === 'won'
+      ? CircleCheck
+      : status === 'followingUp'
+        ? CircleDashed
+        : Circle;
+  return (
+    <SemanticStatusBadge
+      tone={
+        status === 'won'
+          ? 'success'
+          : status === 'followingUp'
+            ? 'info'
+            : 'neutral'
+      }
+    >
+      <Icon />
+      {t(`customers.${status}`)}
+    </SemanticStatusBadge>
+  );
+}
+export function DateText({
+  value,
+  timestamp = false,
+  empty,
+}: {
+  value: string | null;
+  timestamp?: boolean;
+  empty?: string;
+}) {
+  const { t } = useTranslation();
+  const { locale } = useLocale();
+  return value
+    ? new Intl.DateTimeFormat(locale, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        ...(timestamp ? ({ hour: '2-digit', minute: '2-digit' } as const) : {}),
+      }).format(new Date(timestamp ? value : `${value}T12:00:00`))
+    : (empty ?? t('customers.noDate'));
+}
+export function CustomerError({
+  error,
+  title,
+  retry,
+  reload,
+  reset,
+  reading = false,
+}: {
+  error: unknown;
+  title?: string;
+  retry?: () => void;
+  reload?: () => void;
+  reset?: () => void;
+  reading?: boolean;
+}) {
+  const { t } = useTranslation();
+  if (!error) return null;
+  const status = error instanceof ApiClientError ? error.status : 0;
+  return (
+    <Alert variant='destructive'>
+      <AlertDescription>
+        {t(
+          error instanceof PendingSubmissionError ||
+            error instanceof SubmissionTimeoutError
+            ? 'customers.pendingSubmission'
+            : status === 400 && reset
+              ? 'customers.invalidQuery'
+              : status === 404
+                ? title
+                  ? 'customers.namedMissing'
+                  : 'customers.missing'
+                : status === 409
+                  ? 'customers.conflict'
+                  : status === 403
+                    ? 'customers.denied'
+                    : status === 401
+                      ? 'customers.sessionEnded'
+                      : reading
+                        ? 'customers.loadFailed'
+                        : 'customers.failed',
+          { title },
+        )}
+        {status === 400 && reset && (
+          <Button variant='outline' size='sm' onClick={reset}>
+            {t('customers.clear')}
+          </Button>
+        )}
+        {status === 401 && (
+          <Button
+            variant='outline'
+            nativeButton={false}
+            render={<Link to='/login' />}
+          >
+            {t('settings.signInAgain')}
+          </Button>
+        )}
+        {status === 409 && reload && (
+          <Button variant='outline' size='sm' onClick={reload}>
+            {t('customers.reloadLatest')}
+          </Button>
+        )}
+        {!(status === 400 && reset) &&
+          ![401, 403, 404, 409].includes(status) &&
+          retry && (
+            <Button variant='outline' size='sm' onClick={retry}>
+              {t('customers.retry')}
+            </Button>
+          )}
+      </AlertDescription>
+    </Alert>
+  );
+}
+export function TruncatedTitle({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [overflows, setOverflows] = useState(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(() =>
+      setOverflows(node.scrollWidth > node.clientWidth),
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [children]);
+  // Bound text columns to 16rem so long names cannot push row actions out of reach.
+  const text = (
+    <span ref={ref} className='block max-w-64 truncate'>
+      {children}
+    </span>
+  );
+  return (
+    <Tooltip disabled={!overflows}>
+      <TooltipTrigger render={text} />
+      <TooltipContent>{children}</TooltipContent>
+    </Tooltip>
+  );
+}
