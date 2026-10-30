@@ -9,7 +9,7 @@
   },
   "nocobase": {
     "templateKind": "app",
-    "defaultTemplateVersion": "1.0.0-beta.82",
+    "defaultTemplateVersion": "1.0.0-beta.83",
     "templatePackage": "@nocobase/app-template-default"
   },
   "devDependencies": {
@@ -76,7 +76,7 @@
     "@types/jsdom": "^30.0.0",
     "@nocobase/app-client": "^4.0.0-beta.3",
     "@nocobase/app-plugin-template-print": "0.0.2-beta.2",
-    "@nocobase/app-skills": "0.1.0-beta.52",
+    "@nocobase/app-skills": "0.1.0-beta.53",
     "@nocobase/app-testing": "0.1.0-beta.6",
     "@nocobase/app-websocket": "^0.1.0-beta.1",
     "@nocobase/dev-config": "0.1.0-beta.25",
@@ -165,7 +165,7 @@
     "@nocobase/i18n": "^2.0.0-beta.1",
     "@nocobase/caching": "^0.1.0-beta.3",
     "@nocobase/repository-input": "^0.1.0-beta.3",
-    "@nocobase/app-cli": "^1.0.0-beta.28",
+    "@nocobase/app-cli": "^1.0.0-beta.29",
     "@nocobase/realtime": "^0.1.0-beta.3"
   },
   "imports": {

@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@nocobase/app-cli':
-        specifier: ^1.0.0-beta.28
+        specifier: ^1.0.0-beta.29
         version: 1.0.0-beta.30(ded01ef1c950f75ffc28b069c7f7d354)
       '@nocobase/app-plugin-agents':
         specifier: ^1.0.0-beta.27
@@ -139,8 +139,8 @@ importers:
         specifier: 0.0.2-beta.2
         version: 0.0.2-beta.2
       '@nocobase/app-skills':
-        specifier: 0.1.0-beta.52
-        version: 0.1.0-beta.52(@playwright/test@1.64.1)(prettier@3.9.10)
+        specifier: 0.1.0-beta.53
+        version: 0.1.0-beta.53(@playwright/test@1.64.1)(prettier@3.9.10)
       '@nocobase/app-testing':
         specifier: 0.1.0-beta.6
         version: 0.1.0-beta.6(6f29d66e0a41a24afcdee258e0c7aa06)
@@ -1954,8 +1954,8 @@ packages:
       '@nocobase/db-sqlite':
         optional: true
 
-  '@nocobase/app-skills@0.1.0-beta.52':
-    resolution: {integrity: sha512-6CngvE5bbdoP9lr5JF5tIZvRTShKkxR0bDV5ylW2Q/ABY8MPAGbMBuIqX2yCpkdB8gF+j8Wn6j8gpZx6asVLYA==, tarball: https://registry.npmjs.org/@nocobase/app-skills/-/app-skills-0.1.0-beta.52.tgz}
+  '@nocobase/app-skills@0.1.0-beta.53':
+    resolution: {integrity: sha512-vp4FUVxNIty1TmGIf9aRxDBIc4k8n0P0SmmrtRm9n85lAgvQcw5g4ZVIKMx35oER3bNgK4COYdhS2hD94HQjFA==, tarball: https://registry.npmjs.org/@nocobase/app-skills/-/app-skills-0.1.0-beta.53.tgz}
     peerDependencies:
       '@playwright/test': ^1.62.1
       prettier: ^3.9.6
@@ -3629,8 +3629,8 @@ packages:
     resolution: {integrity: sha512-+ys997U96po4Kx/ABpBCqhA9EuxJaQWDQg7295H4hBphv3IZg0boBKuwYpt4YXp6MZ5AmZQnU/tyMTlRpaSejg==}
     engines: {node: '>= 0.4'}
 
-  caniuse-lite@1.0.30001820:
-    resolution: {integrity: sha512-gfWD6MxqVCqAOwmODfZf7DchWvlrA+SRdNX7ceLfg3xRqe5ssjjpF7EgslC/0tiLiNTajdaNN/q8c/5u/7Gz8w==}
+  caniuse-lite@1.0.30001819:
+    resolution: {integrity: sha512-LFUqIIAwpzsIuevnKnsR9qnStBcgzPShTX61lBwN9uFkkf8o8zLiebEjbW8AYtZiF+1YKDWfdt/pWDtMuG8Xwg==}
 
   case-anything@3.1.7:
     resolution: {integrity: sha512-52UPzAJDZgxaNsYK4kvmov1kVaAfPc+OU2j0OSUZWbdWMuJd7Axi94XWSfSuafMd7K9avhsEnU6W6rXJdAd+Ug==}
@@ -5529,8 +5529,8 @@ packages:
   node-readable-to-web-readable-stream@0.4.2:
     resolution: {integrity: sha512-/cMZNI34v//jUTrI+UIo4ieHAB5EZRY/+7OmXZgBxaWBMcW2tGdceIw06RFxWxrKZ5Jp3sI2i5TsRo+CBhtVLQ==}
 
-  node-releases@2.0.61:
-    resolution: {integrity: sha512-5NUN6QCxNFrS9oEA9RPS+d0AP+ooGBzzovY2JhIpDRHacPvOhHjXjUsUMX9qp4nLHZ+5jVgXB2jj/P4arGOE/g==}
+  node-releases@2.0.60:
+    resolution: {integrity: sha512-OmO8+GM1JUZqXET720VrJCwkjUCXmCMQm0Z3UDDRbfNLHS4NEAvY60j5jiFv0tkKw2PNNlqOLhahVmwJIOLDIQ==}
     engines: {node: '>=18'}
 
   nodemailer@10.3.1:
@@ -8840,7 +8840,7 @@ snapshots:
       - zod-openapi
       - zod-to-json-schema
 
-  '@nocobase/app-skills@0.1.0-beta.52(@playwright/test@1.64.1)(prettier@3.9.10)':
+  '@nocobase/app-skills@0.1.0-beta.53(@playwright/test@1.64.1)(prettier@3.9.10)':
     optionalDependencies:
       '@playwright/test': 1.64.1
       prettier: 3.9.10
@@ -9283,7 +9283,7 @@ snapshots:
       immer: 11.2.9
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
-      reselect: 5.2.0
+      reselect: 5.3.0
     optionalDependencies:
       react: 19.3.1
       react-redux: 9.3.1(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1)
@@ -10431,9 +10431,9 @@ snapshots:
   browserslist@4.29.5:
     dependencies:
       baseline-browser-mapping: 2.11.34
-      caniuse-lite: 1.0.30001820
+      caniuse-lite: 1.0.30001819
       electron-to-chromium: 1.5.467
-      node-releases: 2.0.61
+      node-releases: 2.0.60
       update-browserslist-db: 1.3.4(browserslist@4.29.5)
 
   buffer-crc32@0.2.13: {}
@@ -10473,7 +10473,7 @@ snapshots:
       call-bind-apply-helpers: 1.0.2
       get-intrinsic: 1.3.0
 
-  caniuse-lite@1.0.30001820: {}
+  caniuse-lite@1.0.30001819: {}
 
   case-anything@3.1.7: {}
 
@@ -12574,7 +12574,7 @@ snapshots:
   node-readable-to-web-readable-stream@0.4.2:
     optional: true
 
-  node-releases@2.0.61: {}
+  node-releases@2.0.60: {}
 
   nodemailer@10.3.1: {}
 
