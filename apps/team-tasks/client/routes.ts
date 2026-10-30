@@ -1,11 +1,30 @@
 import systemSettingsRoutes from './pages/settings/routes.js';
-import { Home, ListTodo } from 'lucide-react';
+import { Home, ListTodo, FolderKanban } from 'lucide-react';
 import {
   defineAppRoutes,
   type AppClientRouteContribution,
 } from '@nocobase/app-client/plugins';
 
 const appRoutes: AppClientRouteContribution = defineAppRoutes([
+  {
+    name: 'projects',
+    path: '/projects',
+    auth: 'required',
+    authz: { resource: { type: 'page', id: 'projects' }, action: 'access' },
+    navigation: { title: 'projects.title', icon: FolderKanban, order: 20 },
+    componentLoader: () => import('./pages/projects/index.js'),
+    children: [
+      {
+        name: 'projectCreate',
+        path: 'new',
+        authz: {
+          resource: { type: 'composite', id: 'projects' },
+          action: 'create',
+        },
+        componentLoader: () => import('./pages/projects/new.js'),
+      },
+    ],
+  },
   {
     name: 'tasks',
     path: '/tasks',

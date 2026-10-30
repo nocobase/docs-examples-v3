@@ -62,6 +62,8 @@ describe('app client routes', () => {
         'taskDetail',
         'taskDetailEdit',
       ].map((name) => ({ name, authorizedAs: 'tasks' })),
+      { name: 'projects', authorizedAs: 'projects' },
+      { name: 'projectCreate', authorizedAs: 'composite:projects' },
       { name: 'settingsUsers', authorizedAs: 'user:*' },
       { name: 'settingsUserCreate', authorizedAs: 'user:*' },
       { name: 'settingsUser', authorizedAs: 'user:*' },

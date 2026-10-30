@@ -59,6 +59,38 @@ The browser tests create `taske2ealice`, `taske2ebob`, `taske2ecasey` and `taske
 
 See [walkthrough findings](docs/walkthrough.md) for observations from creating and exercising this application. The template guidance below remains available for maintaining the application.
 
+## Project routing example
+
+The independent Projects module accompanies [Pages, routing, and navigation](https://docs.nocobase.com/core/developing-apps/pages-routes-and-navigation/) ([Chinese](https://docs.nocobase.com/zh-CN/core/developing-apps/pages-routes-and-navigation/)). Use the same installation and configuration steps above. It demonstrates a sidebar page, a child route displayed as a dialog, URL-backed search and pagination, and separate page/read/create permissions. Projects have a required name of up to 120 characters; they are not linked to tasks, and this example does not implement project editing or deletion.
+
+1. As administrator, create two ordinary users under **System settings → Users**. Assign **Project reader** to one and **Project creator** to the other. These permission sets are seeded without automatic assignments. Do not also assign administrator access.
+2. Sign in as the creator. Open **Projects → New project**, enter a name, save, and refresh the list to confirm persistence.
+3. Search for part of a name, open **New project**, and copy the URL. Open it directly or refresh: the dialog remains available over the filtered list. Cancel, Escape, and browser Back return to the list; browser Forward after Back reopens the dialog. The URL preserves search and page, not unsaved form input.
+4. Sign in as the reader. The list is available, while the create button and create form are not. An unassigned account cannot access the page or its API.
+
+| Responsibility | Source |
+| --- | --- |
+| Routes and menu | `client/routes.ts` |
+| List, URL state, child outlet | `client/pages/projects/index.tsx` |
+| Create dialog and submission | `client/pages/projects/new.tsx` |
+| Translations | `client/locales/projects.ts` |
+| API and business authorization | `server/routes/projects.ts`, `server/projects/`, `server/providers/projects.ts` |
+| Table and explicit role definitions | `database/main/migrations/202610300101_create_projects.ts`, `database/main/seeds/202610300102_project_roles.ts` |
+| Tests | `tests/server/projects.test.ts`, `tests/client/projects.test.tsx`, `tests/database/projects-migration.test.ts`, `tests/playwright/projects.test.ts` |
+
+Run the focused checks from this directory:
+
+```bash
+pnpm typecheck
+pnpm exec vitest run tests/server/projects.test.ts tests/client/projects.test.tsx tests/database/projects-migration.test.ts tests/server/authorization-assignment-safety.test.ts tests/client/client-routes.test.ts tests/client/page-permission-titles.test.ts
+pnpm exec playwright install chromium
+TUTORIAL_ORIGIN=http://127.0.0.1:13000 pnpm exec playwright test tests/playwright/projects.test.ts
+```
+
+Set `TUTORIAL_ORIGIN` to the actual origin of a disposable running application, without `/main`; tests append that default base path. `TUTORIAL_USERNAME` and `TUTORIAL_PASSWORD` can override the isolated example's initial administrator credentials. Browser tests create `projecte2ecreator`, `projecte2ereader`, and `projecte2enone` with the test password declared in their source. They retain project records and accounts for inspection. Use a separate database for this run and discard that test database when finished; project deletion is outside the example's scope.
+
+Verification on 2026-10-30 used Node.js 24, the committed dependencies, SQLite, and Chromium on a LAN HTTP origin. Server and component checks cover persistence, validation, filtering, paging, ordinary-user authorization, and replay of a lost create response without duplicate records. Browser checks cover direct child URLs, reload, Back/Forward, query preservation, focus, failures, narrow layouts, both theme presets, and English/Chinese UI. Other databases and production deployment have not been verified for this added module.
+
 ---
 
 # NocoBase 3 Application
