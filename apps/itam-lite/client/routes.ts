@@ -1,10 +1,31 @@
-import { Home } from 'lucide-react';
+import { Home, Laptop } from 'lucide-react';
+import systemSettingsRoutes from './pages/settings/routes.js';
 import {
   defineAppRoutes,
   type AppClientRouteContribution,
 } from '@nocobase/app-client/plugins';
 
 const appRoutes: AppClientRouteContribution = defineAppRoutes([
+  {
+    name: 'devices',
+    path: '/devices',
+    auth: 'required',
+    authz: { resource: { type: 'page', id: 'devices' }, action: 'access' },
+    navigation: { title: 'devices.title', icon: Laptop, order: 10 },
+    componentLoader: () => import('./pages/devices/index.js'),
+    children: [
+      {
+        name: 'deviceCreate',
+        path: 'new',
+        componentLoader: () => import('./pages/devices/form.js'),
+      },
+      {
+        name: 'deviceEdit',
+        path: 'edit/:deviceId',
+        componentLoader: () => import('./pages/devices/form.js'),
+      },
+    ],
+  },
   {
     // Every signed-in user reaches the landing page. `authz: 'skip'` takes it out of page authorization entirely, so
     // no permission change can leave a user signed in with nowhere to land.
@@ -64,6 +85,9 @@ const appRoutes: AppClientRouteContribution = defineAppRoutes([
   },
 ]);
 
-const routes: readonly AppClientRouteContribution[] = [appRoutes];
+const routes: readonly AppClientRouteContribution[] = [
+  appRoutes,
+  systemSettingsRoutes,
+];
 
 export default routes;

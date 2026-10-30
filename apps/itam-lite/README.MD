@@ -21,10 +21,39 @@ Open the full `Local:` URL printed by `pnpm dev`, including `/main/`, and sign i
 
 ## Chapters
 
-| Chapter                                                                            | Checkpoint                                | What it adds                                                           |
-| ---------------------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------- |
-| [4 Create the app](https://docs.nocobase.com/zh-CN/guides/create-app/)             | `feat(itam-lite): create the application` | The default template, configured for SQLite                            |
-| [5 Write a design doc](https://docs.nocobase.com/zh-CN/guides/write-a-design-doc/) | `docs(itam-lite): add the system design`  | [`docs/design.md`](docs/design.md) (Chinese), indexed from `AGENTS.md` |
+| Chapter                                                                                               | Checkpoint                                 | What it adds                                                                                       |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| [4 Create the app](https://docs.nocobase.com/zh-CN/guides/create-app/)                                | `feat(itam-lite): create the application`  | The default template, configured for SQLite                                                        |
+| [5 Write a design doc](https://docs.nocobase.com/zh-CN/guides/write-a-design-doc/)                    | `docs(itam-lite): add the system design`   | [`docs/design.md`](docs/design.md) (Chinese), indexed from `AGENTS.md`                             |
+| [6 First feature: the device register](https://docs.nocobase.com/zh-CN/guides/first-feature-devices/) | `feat(itam-lite): add the device register` | Devices table, API and page; a second round adds unique serial numbers and status/category filters |
+
+## Source map
+
+| Part                   | Application source                                                                                                                                   |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Design                 | `docs/design.md`                                                                                                                                     |
+| Devices: schema        | `database/main/migrations/202610300101_create_devices.ts`, `202610300102_add_device_serial_number_unique.ts`                                         |
+| Devices: API and rules | `server/devices/schemas.ts`, `server/devices/service.ts`, `server/devices/permissions.ts`, `server/providers/devices.ts`, `server/routes/devices.ts` |
+| Devices: pages         | `client/routes.ts`, `client/pages/devices/`, `client/components/person-picker.tsx`, `client/locales/devices.ts`                                      |
+| Tests                  | `tests/server/devices.test.ts`, `tests/database/devices-migration.test.ts`, `tests/client/client-routes.test.ts`                                     |
+
+`202610300102_add_device_serial_number_unique` refuses to run while devices share a serial number and names them; correct the duplicates in the register first. It never changes data on its own.
+
+## Verify
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm exec vitest run tests/server/devices.test.ts tests/database/devices-migration.test.ts tests/client/client-routes.test.ts
+```
+
+Checks that ran for each checkpoint are listed under [Verification log](#verification-log).
+
+## Verification log
+
+| Checkpoint        | Ran                                                                                                                                                                                                                                       | Browser check                                                                                                                                                                                      | Not verified                                                                                    |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 6 Device register | `pnpm typecheck`, `pnpm lint`, the three test files above (10 tests), `tests/client/page-permission-titles.test.ts`, `tests/server/authorization-assignment-safety.test.ts`, `tests/client/app-locale-coverage.test.ts`, `tests/project/` | As the administrator on SQLite: registered a device, saw the duplicate asset tag and serial number messages beside their fields, filtered by status, searched by serial number, edited and deleted | No client component test or Playwright test for the device page; PostgreSQL and MySQL not tried |
 
 ---
 
