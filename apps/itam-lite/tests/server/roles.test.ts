@@ -46,8 +46,17 @@ async function person(
     password: `${name}-test-password`,
   };
   expect(
-    (await admin.fetch('/users', json('POST', { ...credentials, name: id })))
-      .status,
+    (
+      await admin.fetch(
+        '/users',
+        json(
+          'POST',
+          { ...credentials, name: id },
+          // User management is a standard write: it needs an operation key.
+          { 'Idempotency-Key': `${Date.now()}.${randomUUID()}` },
+        ),
+      )
+    ).status,
   ).toBe(201);
   const session = await signIn(testApp, credentials);
   await testApp.application.container

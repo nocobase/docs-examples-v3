@@ -9,10 +9,10 @@ importers:
   .:
     dependencies:
       '@nocobase/app-cli':
-        specifier: ^1.0.0-beta.29
+        specifier: ^1.0.0-beta.30
         version: 1.0.0-beta.30(ded01ef1c950f75ffc28b069c7f7d354)
       '@nocobase/app-plugin-agents':
-        specifier: ^1.0.0-beta.27
+        specifier: ^1.0.0-beta.28
         version: 1.0.0-beta.29(d132263c317f196c203dda7f16e7a766)
       '@nocobase/app-plugin-api-keys':
         specifier: ^1.0.0-beta.19
@@ -21,10 +21,10 @@ importers:
         specifier: ^2.0.0-beta.15
         version: 2.0.0-beta.15(dde75f14b0efcf0b006373c639c6b481)
       '@nocobase/app-plugin-authorization':
-        specifier: ^1.0.0-beta.32
+        specifier: ^1.0.0-beta.33
         version: 1.0.0-beta.33(a43348b9daefe071aeb18af7e1fc3993)
       '@nocobase/app-plugin-authz-default-access':
-        specifier: ^1.0.0-beta.16
+        specifier: ^1.0.0-beta.17
         version: 1.0.0-beta.17(505301e51163c69f4ef36e76a6e8dd2f)
       '@nocobase/app-plugin-authz-restriction-rules':
         specifier: ^1.0.0-beta.15
@@ -45,7 +45,7 @@ importers:
         specifier: ^1.0.0-beta.18
         version: 1.0.0-beta.18(d50a3e74fee435a94d732a1754642c45)
       '@nocobase/app-plugin-knowledge':
-        specifier: ^0.1.0-beta.13
+        specifier: ^0.1.0-beta.14
         version: 0.1.0-beta.14(771a5028a551ee6e63ec5ed7e7964ca1)
       '@nocobase/app-plugin-mail':
         specifier: ^1.0.0-beta.17
@@ -63,10 +63,10 @@ importers:
         specifier: ^1.0.0-beta.20
         version: 1.0.0-beta.20(7f13c4c33527b11042cc368867a098f4)
       '@nocobase/app-plugin-users':
-        specifier: ^2.0.0-beta.10
+        specifier: ^2.0.0-beta.11
         version: 2.0.0-beta.11(691caa4ffd488523a7fabc59bfc07455)
       '@nocobase/app-server':
-        specifier: ^3.0.0-beta.3
+        specifier: ^3.0.0-beta.4
         version: 3.0.0-beta.4(@nocobase/caching@0.1.0-beta.3)(@nocobase/db-sqlite@0.1.0-beta.6(@nocobase/db@1.0.0-beta.23(pg@8.23.1))(pg@8.23.1))(@nocobase/db@1.0.0-beta.23(pg@8.23.1))(@nocobase/i18n@2.0.0-beta.1(hono@4.13.14)(react-i18next@17.1.9(i18next@26.5.11(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@6.0.3))(react@19.3.1)(typescript@6.0.3))(@nocobase/jobs@0.1.0-beta.4(pg@8.23.1))(@nocobase/queue@0.1.0-beta.9(pg@8.23.1))(@nocobase/service-provider@0.0.2-beta.2)(idb-keyval@6.3.0)
       '@nocobase/authorization':
         specifier: ^1.0.0-beta.15
@@ -78,7 +78,7 @@ importers:
         specifier: ^0.1.0-beta.3
         version: 0.1.0-beta.3
       '@nocobase/db':
-        specifier: ^1.0.0-beta.22
+        specifier: ^1.0.0-beta.23
         version: 1.0.0-beta.23(pg@8.23.1)
       '@nocobase/db-sqlite':
         specifier: ^0.1.0-beta.6
@@ -132,15 +132,18 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.0.1
         version: 5.9.2(@sinclair/typebox@0.34.52)(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(zod@4.6.7)
+      '@noble/hashes':
+        specifier: 2.3.0
+        version: 2.3.0
       '@nocobase/app-client':
-        specifier: ^4.0.0-beta.3
+        specifier: ^4.0.0-beta.4
         version: 4.0.0-beta.4(@noble/hashes@2.3.0)(@nocobase/i18n@2.0.0-beta.1(hono@4.13.14)(react-i18next@17.1.9(i18next@26.5.11(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@6.0.3))(react@19.3.1)(typescript@6.0.3))(@nocobase/repository-input@0.1.0-beta.3)(@nocobase/service-provider@0.0.2-beta.2)(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react-i18next@17.1.9(i18next@26.5.11(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@6.0.3))(react-router@7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
       '@nocobase/app-plugin-template-print':
         specifier: 0.0.2-beta.2
         version: 0.0.2-beta.2
       '@nocobase/app-skills':
-        specifier: 0.1.0-beta.53
-        version: 0.1.0-beta.53(@playwright/test@1.64.1)(prettier@3.9.10)
+        specifier: 0.1.0-beta.54
+        version: 0.1.0-beta.54(@playwright/test@1.64.1)(prettier@3.9.10)
       '@nocobase/app-testing':
         specifier: 0.1.0-beta.6
         version: 0.1.0-beta.6(6f29d66e0a41a24afcdee258e0c7aa06)
@@ -1568,10 +1571,6 @@ packages:
     resolution: {integrity: sha512-oN+QwyX7VSHotibwubG3kpzbwKrfnyR6OOO+3Nk/53ADL7FmgHHz4TgrbaYKvvOw09u6QTx0oiH1cNCIOuN0CQ==}
     engines: {node: '>= 20.19.0'}
 
-  '@noble/hashes@2.4.0':
-    resolution: {integrity: sha512-X5XaVWZIBCT7HHZGm5I7ZQXDwLG+bGXuSrMQAW+7Zvl87h1kmc1ZB1VSRJcpUfoUrGQp4Fkoxm5kZ+Ms+aW+eA==}
-    engines: {node: '>= 20.19.0'}
-
   '@nocobase/acp-bridge@1.0.0-beta.4':
     resolution: {integrity: sha512-A4PW+YQI/KQ6R3d3x7dbMlqCzWwkNWZLCvtpVJEwL4bZdJX2w9RUJdq5+q2KsfsDsCwIGBKL2BdYKJQcMyoaqQ==, tarball: https://registry.npmjs.org/@nocobase/acp-bridge/-/acp-bridge-1.0.0-beta.4.tgz}
     engines: {node: '>=24.0.0'}
@@ -1954,8 +1953,8 @@ packages:
       '@nocobase/db-sqlite':
         optional: true
 
-  '@nocobase/app-skills@0.1.0-beta.53':
-    resolution: {integrity: sha512-vp4FUVxNIty1TmGIf9aRxDBIc4k8n0P0SmmrtRm9n85lAgvQcw5g4ZVIKMx35oER3bNgK4COYdhS2hD94HQjFA==, tarball: https://registry.npmjs.org/@nocobase/app-skills/-/app-skills-0.1.0-beta.53.tgz}
+  '@nocobase/app-skills@0.1.0-beta.54':
+    resolution: {integrity: sha512-baP9l2ikc6PCsDnNH9icfm4SDmwWOho2h8LT6cEXfrAsXyBABHt/L88o7J1iBqIrdYbnrivEiudu6pRJXNhluA==, tarball: https://registry.npmjs.org/@nocobase/app-skills/-/app-skills-0.1.0-beta.54.tgz}
     peerDependencies:
       '@playwright/test': ^1.62.1
       prettier: ^3.9.6
@@ -7746,11 +7745,11 @@ snapshots:
 
   '@better-auth/utils@0.4.2':
     dependencies:
-      '@noble/hashes': 2.4.0
+      '@noble/hashes': 2.3.0
 
   '@better-auth/utils@0.5.1':
     dependencies:
-      '@noble/hashes': 2.4.0
+      '@noble/hashes': 2.3.0
 
   '@better-fetch/fetch@1.3.2': {}
 
@@ -8303,8 +8302,6 @@ snapshots:
 
   '@noble/hashes@2.3.0': {}
 
-  '@noble/hashes@2.4.0': {}
-
   '@nocobase/acp-bridge@1.0.0-beta.4':
     dependencies:
       '@agentclientprotocol/sdk': 1.9.0(zod@4.6.7)
@@ -8840,7 +8837,7 @@ snapshots:
       - zod-openapi
       - zod-to-json-schema
 
-  '@nocobase/app-skills@0.1.0-beta.53(@playwright/test@1.64.1)(prettier@3.9.10)':
+  '@nocobase/app-skills@0.1.0-beta.54(@playwright/test@1.64.1)(prettier@3.9.10)':
     optionalDependencies:
       '@playwright/test': 1.64.1
       prettier: 3.9.10
@@ -10369,7 +10366,7 @@ snapshots:
       '@better-auth/utils': 0.4.2
       '@better-fetch/fetch': 1.3.2
       '@noble/ciphers': 2.4.0
-      '@noble/hashes': 2.4.0
+      '@noble/hashes': 2.3.0
       better-call: 1.4.0(zod@4.6.7)
       defu: 6.1.7
       jose: 6.2.14

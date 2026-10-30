@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { expect } from 'vitest';
 import { createAppTest } from '@nocobase/app-testing/server';
 import {
@@ -17,9 +18,17 @@ const test = createAppTest({
   },
 });
 
-const json = (method: string, data: unknown) => ({
+const json = (
+  method: string,
+  data: unknown,
+  extra: Record<string, string> = {},
+) => ({
   method,
-  headers: { 'content-type': 'application/json', origin: 'http://localhost' },
+  headers: {
+    ...extra,
+    'content-type': 'application/json',
+    origin: 'http://localhost',
+  },
   body: JSON.stringify(data),
 });
 
@@ -156,7 +165,12 @@ test('refuses a signed-in person without device permissions', async ({
     (
       await admin.fetch(
         '/users',
-        json('POST', { ...credentials, name: 'No devices' }),
+        json(
+          'POST',
+          { ...credentials, name: 'No devices' },
+          // User management is a standard write: it needs an operation key.
+          { 'Idempotency-Key': `${Date.now()}.${randomUUID()}` },
+        ),
       )
     ).status,
   ).toBe(201);
