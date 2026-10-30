@@ -1,125 +1,125 @@
-# ITAM Lite 系统设计
+# ITAM Lite system design
 
-本文是 ITAM Lite 的系统设计文档，是之后每个需求的依据。需求和这里冲突时，先改这份文档，再改代码。
+This is the system design document of ITAM Lite and the basis for every later request. When a request conflicts with it, change this document first, then the code.
 
-## 1. 目标
+## 1. Goals
 
-公司约 50 人，IT 设备现在记在一张共享表格里：谁拿了哪台电脑、哪台在维修，要翻聊天记录才知道。ITAM Lite 要做到三件事：
+The company has about 50 people, and its IT devices are kept in a shared spreadsheet: who has which computer and which one is in repair can only be found by digging through chat history. ITAM Lite has to do three things:
 
-1. 每台设备有一条记录，随时知道它在哪、谁在用、什么状态。
-2. 员工在系统里申请设备，需要审批的走审批，发放后台账自动更新。
-3. 每个人只看到、只能做自己该做的事，服务端校验，不只是隐藏按钮。
+1. Every device has one record, so you always know where it is, who uses it and what state it is in.
+2. Employees request devices in the system; requests that need approval go through approval, and the register updates itself when a device is issued.
+3. Everyone sees and does only what they should, enforced on the server, not just by hiding buttons.
 
-## 2. 角色
+## 2. Roles
 
-| 角色       | 是谁                | 主要工作                                                   |
-| ---------- | ------------------- | ---------------------------------------------------------- |
-| 员工       | 公司里的所有人      | 提交领用申请，查看自己的申请和名下设备，撤回还没发放的申请 |
-| IT 支持    | IT 部门的一线同事   | 维护设备台账，给已批准的申请发放设备                       |
-| 资产管理员 | IT 部门负责资产的人 | 看全部设备和申请，审批需要审批的领用申请，可以删除设备     |
-| 系统管理员 | 初始管理员账号      | 管理用户、角色和权限，调整流程参数                         |
+| Role                 | Who                                   | Main work                                                                                                          |
+| -------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Employee             | Everyone in the company               | Submit device requests, view their own requests and the devices assigned to them, withdraw requests not yet issued |
+| IT support           | First-line staff in the IT department | Maintain the device register, issue devices for approved requests                                                  |
+| Asset manager        | The person in IT who owns assets      | See all devices and requests, approve the requests that need approval, delete devices                              |
+| System administrator | The initial administrator account     | Manage users, roles and permissions, adjust workflow parameters                                                    |
 
-一个人可以有多个角色，例如 IT 支持本人也是员工。
+One person can have several roles; for example, IT support staff are employees too.
 
-## 3. 核心对象
+## 3. Core objects
 
-### 设备
+### Device
 
-| 字段     | 说明                                    | 规则                                     |
-| -------- | --------------------------------------- | ---------------------------------------- |
-| 资产编号 | 贴在设备上的编号，例如 `IT-2026-0001`   | 必填，全局唯一，最多 40 个字符           |
-| 名称     | 型号或名称，例如 `MacBook Pro 14 M4`    | 必填，最多 120 个字符                    |
-| 类别     | 笔记本、台式机、显示器、手机、配件      | 必填，五选一                             |
-| 序列号   | 厂商序列号                              | 选填；填写时全局唯一（第一轮试用后补充） |
-| 状态     | 在库、在用、维修中、已报废              | 必填，新建默认在库                       |
-| 使用人   | 当前使用这台设备的用户                  | 状态为在用时必填；其他状态必须为空       |
-| 位置     | 办公室、楼层或仓库，例如 `上海 3F 仓库` | 选填，最多 120 个字符                    |
-| 采购日期 |                                         | 选填                                     |
-| 备注     |                                         | 选填，最多 2000 个字符                   |
+| Field         | Description                                                 | Rule                                                                            |
+| ------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Asset tag     | The tag stuck on the device, such as `IT-2026-0001`         | Required, unique across the system, at most 40 characters                       |
+| Name          | Model or name, such as `MacBook Pro 14 M4`                  | Required, at most 120 characters                                                |
+| Category      | Laptop, Desktop, Monitor, Phone, Accessory                  | Required, one of the five                                                       |
+| Serial number | The manufacturer's serial number                            | Optional; unique across the system when filled in (added after the first trial) |
+| Status        | In stock, In use, In repair, Retired                        | Required, In stock by default for a new device                                  |
+| Assigned to   | The user currently using this device                        | Required when the status is In use; must be empty in any other status           |
+| Location      | Office, floor or storeroom, such as `Shanghai 3F storeroom` | Optional, at most 120 characters                                                |
+| Purchase date |                                                             | Optional                                                                        |
+| Notes         |                                                             | Optional, at most 2000 characters                                               |
 
-### 领用申请
+### Device request
 
-| 字段         | 说明              | 规则                                  |
-| ------------ | ----------------- | ------------------------------------- |
-| 申请人       | 提交申请的用户    | 由系统填写为当前用户，不能代别人申请  |
-| 类别         | 想要的设备类别    | 必填，与设备类别相同                  |
-| 用途         | 为什么需要        | 必填，最多 500 个字符                 |
-| 期望到货日期 | 希望哪天拿到设备  | 选填；不能早于提交当天（第 9 篇补充） |
-| 状态         | 见下面的流程      | 只由流程改变                          |
-| 是否需要审批 | 提交时按规则算出  | 由系统填写                            |
-| 审批意见     | 驳回时必填        |                                       |
-| 发放的设备   | IT 支持发放时选择 | 发放时必填                            |
+| Field            | Description                            | Rule                                                                             |
+| ---------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
+| Requester        | The user who submits the request       | Filled in by the system as the current user; nobody can request for someone else |
+| Category         | The category of device wanted          | Required, same as the device categories                                          |
+| Reason           | Why it is needed                       | Required, at most 500 characters                                                 |
+| Needed by        | The day the requester wants the device | Optional; cannot be earlier than the day it is submitted (added in chapter 9)    |
+| Status           | See the workflow below                 | Changed only by the workflow                                                     |
+| Approval         | Worked out by the rules on submission  | Filled in by the system                                                          |
+| Decision comment | Required when rejecting                |                                                                                  |
+| Issued device    | Chosen by IT support when issuing      | Required when issuing                                                            |
 
-## 4. 领用流程
+## 4. Request workflow
 
 ```text
-            提交（需要审批）            批准
-  员工 ──────────────────▶ 待审批 ───────────▶ 待发放 ──── 发放 ───▶ 已发放
-     │                       │                    ▲
-     │                       └── 驳回 ──▶ 已驳回    │
-     └──────── 提交（不需要审批）──────────────────┘
-  待审批、待发放时，申请人可以撤回 ──▶ 已撤回
+            Submit (needs approval)                 Approve
+  Employee ──────────────────▶ Pending approval ───────────▶ Ready to issue ──── Issue ───▶ Issued
+     │                              │                               ▲
+     │                              └── Reject ──▶ Rejected         │
+     └──────── Submit (no approval needed) ─────────────────────────┘
+  While Pending approval or Ready to issue, the requester can withdraw ──▶ Withdrawn
 ```
 
-规则：
+Rules:
 
-1. **什么时候需要审批。** 满足任意一条：申请的类别在“需要审批的类别”里（默认：笔记本、手机）；申请人名下在用的设备已经达到“个人设备上限”（默认 2 台）。两项都是流程参数，系统管理员可以在「流程管理」里调整，调整只影响之后提交的申请。
-2. **谁审批。** 有资产管理员角色的任何人都可以审批，不能审批自己提交的申请。驳回必须写审批意见。
-3. **谁发放。** 有 IT 支持角色的人，从“在库”且类别相同的设备里选一台发放。发放时设备状态改为在用、使用人改为申请人，和申请状态在同一个事务里完成。
-4. **撤回。** 申请人可以撤回待审批、待发放的申请。已发放、已驳回的申请不能再改。
-5. **历史。** 每次状态变化记录谁、什么时候、做了什么，在申请详情里能看到。
+1. **When approval is needed.** When either holds: the requested category is in "Categories that need approval" (by default Laptop and Phone); or the devices in use assigned to the requester have already reached "Devices a person may use without approval" (2 by default). Both are workflow parameters that the system administrator can adjust in "Workflow management"; a change affects only requests submitted afterwards.
+2. **Who approves.** Anyone with the Asset manager role can approve, but not a request they submitted themselves. Rejecting requires a decision comment.
+3. **Who issues.** Someone with the IT support role picks one device that is In stock and of the same category and issues it. Issuing sets the device's status to In use and its user to the requester, in the same transaction as the request's status change.
+4. **Withdrawing.** The requester can withdraw a request that is Pending approval or Ready to issue. Issued and Rejected requests cannot change any more.
+5. **History.** Every status change records who did what and when, visible in the request details.
 
-### 通知
+### Notifications
 
-用 Core 的通知插件发站内信，点开直接进入申请详情。
+Send in-app messages with Core's notification plugin; opening one goes straight to the request details.
 
-| 什么时候   | 通知谁                                 |
-| ---------- | -------------------------------------- |
-| 进入待审批 | 所有资产管理员（申请人本人除外）       |
-| 进入待发放 | 所有 IT 支持；申请人（如果经过了审批） |
-| 被驳回     | 申请人，附审批意见                     |
-| 已发放     | 申请人，附设备资产编号                 |
+| When                    | Who is notified                                                   |
+| ----------------------- | ----------------------------------------------------------------- |
+| Enters Pending approval | All asset managers (except the requester)                         |
+| Enters Ready to issue   | All IT support staff; the requester (if it went through approval) |
+| Rejected                | The requester, with the decision comment                          |
+| Issued                  | The requester, with the device's asset tag                        |
 
-站内信发送失败不影响申请本身，失败可以在流程管理的执行记录里看到。
+A failure to send an in-app message does not affect the request itself; failures can be seen in the executions of Workflow management.
 
-## 5. 页面
+## 5. Pages
 
-| 页面                        | 谁能打开                  | 内容                                                                                                           |
-| --------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| 设备台账                    | 员工、IT 支持、资产管理员 | 设备列表：按资产编号、名称、序列号搜索，按状态、类别筛选；新建、编辑、删除按权限显示。员工只看到自己名下的设备 |
-| 领用申请                    | 员工、IT 支持、资产管理员 | 申请列表（含期望到货日期）和“新建申请”；详情里有流程进度、可执行的操作和历史。员工只看到自己的申请             |
-| 站内信                      | 所有登录用户              | 模板自带                                                                                                       |
-| 系统设置 › 用户、角色和权限 | 系统管理员                | 模板自带，给用户分配角色                                                                                       |
-| 系统设置 › 流程管理         | 系统管理员                | 领用流程的定义图、参数和执行记录                                                                               |
+| Page                                           | Who can open it                     | Content                                                                                                                                                                                                        |
+| ---------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Devices                                        | Employee, IT support, Asset manager | The device list: search by asset tag, name or serial number, filter by status and category; creating, editing and deleting are shown according to permissions. Employees see only the devices assigned to them |
+| Device requests                                | Employee, IT support, Asset manager | The request list (including Needed by) and "New request"; the details show the workflow progress, the actions available and the history. Employees see only their own requests                                 |
+| Inbox                                          | Every signed-in user                | Comes with the template                                                                                                                                                                                        |
+| System settings › Users, Roles and permissions | System administrator                | Comes with the template; assigns roles to users                                                                                                                                                                |
+| System settings › Workflow management          | System administrator                | The request workflow's diagram, parameters and executions                                                                                                                                                      |
 
-## 6. 权限
+## 6. Permissions
 
-|                | 员工       | IT 支持 | 资产管理员       |
-| -------------- | ---------- | ------- | ---------------- |
-| 查看设备       | 自己名下的 | 全部    | 全部             |
-| 新建、编辑设备 | 否         | 是      | 是               |
-| 删除设备       | 否         | 否      | 是               |
-| 提交领用申请   | 是         | 是      | 是               |
-| 查看领用申请   | 自己的     | 全部    | 全部             |
-| 审批           | 否         | 否      | 是（不含自己的） |
-| 发放           | 否         | 是      | 否               |
+|                         | Employee               | IT support | Asset manager          |
+| ----------------------- | ---------------------- | ---------- | ---------------------- |
+| View devices            | Those assigned to them | All        | All                    |
+| Create and edit devices | No                     | Yes        | Yes                    |
+| Delete devices          | No                     | No         | Yes                    |
+| Submit device requests  | Yes                    | Yes        | Yes                    |
+| View device requests    | Their own              | All        | All                    |
+| Approve                 | No                     | No         | Yes (except their own) |
+| Issue                   | No                     | Yes        | No                     |
 
-所有限制都在服务端执行：列表和详情按数据范围过滤，直接调用接口越权时返回 403 或 404。页面按同样的结果隐藏按钮，只是为了好用。
+Every restriction is enforced on the server: lists and details are filtered by data scope, and calling the API directly beyond one's permissions returns 403 or 404. Pages hide buttons according to the same result only for convenience.
 
-## 7. 设计规范
+## 7. Design guidelines
 
-公司没有自己的设计规范，沿用 NocoBase 3 内置的设计规范：shadcn/ui 组件、模板的主题 token、标准的列表、表单和抽屉。不单独改颜色和字体。界面提供中文和英文。
+The company has no design guidelines of its own and follows the ones built into NocoBase 3: shadcn/ui components, the template's theme tokens, and standard lists, forms and drawers. Colors and fonts are not changed separately. The interface is available in Chinese and English.
 
-## 8. 范围
+## 8. Scope
 
-这一版做：设备台账、领用申请与审批、站内通知、三个业务角色和权限、流程管理。
+This version includes: the device register, device requests and approval, in-app notifications, the three business roles and their permissions, and workflow management.
 
-这一版不做：采购、维修、盘点、报废、软件许可、设备归还、多级审批、部门和组织架构、导入导出、MDM 同步、AI 助手。需要时另提需求。
+This version excludes: purchasing, repairs, stocktaking, retirement, software licenses, device returns, multi-level approval, departments and organization structure, import and export, MDM sync, and AI assistants. Raise a separate request when they are needed.
 
-## 9. 分步交付与验收
+## 9. Delivery steps and acceptance
 
-| 步骤         | 交付                             | 怎样算完成                                                                                                                                     |
-| ------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 设备台账   | 设备表、接口和页面               | 管理员能新建、编辑、搜索、按状态和类别筛选设备；资产编号、序列号重复时在对应输入框旁提示；刷新后数据还在                                       |
-| 2 领用与审批 | 申请表、领用流程、通知、流程管理 | 笔记本申请进入待审批，资产管理员批准后 IT 支持发放，台账里这台设备变为在用、使用人是申请人；显示器申请直接进入待发放；每一步相关的人收到站内信 |
-| 3 角色与权限 | 三个角色和数据范围               | 分别用三个角色的账号登录，看到和能做的与第 6 节一致；员工直接调用审批、发放、编辑设备的接口被拒绝                                              |
+| Step                    | Delivers                                                                | Done when                                                                                                                                                                                                                                                                                       |
+| ----------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 Device register       | The device table, API and page                                          | An administrator can create, edit and search devices and filter them by status and category; a duplicate asset tag or serial number is reported next to its input; the data is still there after a refresh                                                                                      |
+| 2 Requests and approval | The request table, request workflow, notifications, Workflow management | A Laptop request goes to Pending approval, and after an asset manager approves it IT support issues a device, which then shows In use in the register with the requester as its user; a Monitor request goes straight to Ready to issue; at each step the people involved get an in-app message |
+| 3 Roles and permissions | The three roles and their data scopes                                   | Signing in with an account of each of the three roles, what each sees and can do matches section 6; an employee calling the approve, issue or edit-device API directly is refused                                                                                                               |
