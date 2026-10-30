@@ -19,6 +19,7 @@ const test = createAppTest({
   },
 });
 
+const operationKey = () => `${Date.now()}.${randomUUID()}`;
 const json = (
   method: string,
   data: unknown,
@@ -28,6 +29,8 @@ const json = (
   headers: {
     'content-type': 'application/json',
     origin: 'http://localhost',
+    // Every write is a new operation unless a test repeats one on purpose.
+    ...(method === 'GET' ? {} : { 'Idempotency-Key': operationKey() }),
     ...headers,
   },
   body: JSON.stringify(data),
@@ -54,7 +57,7 @@ async function person(
           'POST',
           { ...credentials, name: id },
           // User management is a standard write: it needs an operation key.
-          { 'Idempotency-Key': `${Date.now()}.${randomUUID()}` },
+          { 'Idempotency-Key': operationKey() },
         ),
       )
     ).status,
@@ -75,17 +78,14 @@ const submit = async (session: Session, category: string) => {
     json(
       'POST',
       { category, reason: 'Needed for work' },
-      { 'Idempotency-Key': randomUUID() },
+      { 'Idempotency-Key': operationKey() },
     ),
   );
   expect(response.status).toBe(201);
   return ((await response.json()) as { data: DeviceRequest }).data;
 };
 const fire = (session: Session, id: string, body: Record<string, unknown>) =>
-  session.fetch(
-    `/requests/${id}/fire`,
-    json('POST', { requestId: randomUUID(), ...body }),
-  );
+  session.fetch(`/requests/${id}/fire`, json('POST', body));
 
 test('routes requests by the approval rules, then approves and issues them', async ({
   testApp,
@@ -257,7 +257,7 @@ test('keeps the needed-by date and refuses one before today', async ({
       json(
         'POST',
         { category: 'monitor', reason: 'Second screen', neededBy },
-        { 'Idempotency-Key': randomUUID() },
+        { 'Idempotency-Key': operationKey() },
       ),
     );
 
@@ -278,4 +278,94 @@ test('keeps the needed-by date and refuses one before today', async ({
     error: { reason: 'REQUEST_NEEDED_BY_PAST' },
   });
   expect((await post('2099-02-30')).status).toBe(400);
+});
+
+test('submits and decides a request once however often the same attempt arrives', async ({
+  testApp,
+}) => {
+  const admin = await signIn(testApp, DEFAULT_ADMIN_CREDENTIALS);
+  const alice = await person(testApp, admin, 'alice', 'employee');
+  const cathy = await person(testApp, admin, 'cathy', 'asset-manager');
+  const mine = async () =>
+    (
+      (await (await alice.fetch('/requests?mine=true')).json()) as {
+        data: DeviceRequest[];
+      }
+    ).data;
+
+  // A double click on Submit: both requests carry the same operation key and arrive together.
+  const key = operationKey();
+  // Phones need approval under the default rules and under the ones the test above saves.
+  const body = { category: 'phone', reason: 'New starter' };
+  const submits = await Promise.all(
+    [1, 2].map(() =>
+      alice.fetch('/requests', json('POST', body, { 'Idempotency-Key': key })),
+    ),
+  );
+  expect(submits.map((response) => response.status)).toEqual([201, 201]);
+  const [a, b] = (await Promise.all(
+    submits.map((response) => response.json()),
+  )) as { data: DeviceRequest }[];
+  expect(b.data).toEqual(a.data);
+  // A retry after a lost response answers the same request.
+  const retry = await alice.fetch(
+    '/requests',
+    json('POST', body, { 'Idempotency-Key': key }),
+  );
+  expect(retry.headers.get('Idempotency-Replayed')).toBe('true');
+  expect(((await retry.json()) as { data: DeviceRequest }).data.id).toBe(
+    a.data.id,
+  );
+  expect((await mine()).map((request) => request.id)).toEqual([a.data.id]);
+  const unkeyed = await alice.fetch('/requests', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', origin: 'http://localhost' },
+    body: JSON.stringify(body),
+  });
+  expect(unkeyed.status).toBe(400);
+  expect(await mine()).toHaveLength(1);
+
+  // A double click on Approve decides once: one transition, the same answer twice.
+  const approveKey = operationKey();
+  const decision = {
+    transition: 'approve',
+    input: { decisionComment: 'OK' },
+    expectVersion: a.data.lifecycleVersion,
+  };
+  const approvals = await Promise.all(
+    [1, 2].map(() =>
+      cathy.fetch(
+        `/requests/${a.data.id}/fire`,
+        json('POST', decision, { 'Idempotency-Key': approveKey }),
+      ),
+    ),
+  );
+  expect(approvals.map((response) => response.status)).toEqual([200, 200]);
+  expect(
+    approvals
+      .map((response) => response.headers.get('Idempotency-Replayed'))
+      .sort(),
+  ).toEqual(['false', 'true']);
+  // Replayed after the version moved on: the stored answer, not a stale-version refusal.
+  const late = await cathy.fetch(
+    `/requests/${a.data.id}/fire`,
+    json('POST', decision, { 'Idempotency-Key': approveKey }),
+  );
+  expect(late.status).toBe(200);
+  expect(await late.json()).toMatchObject({
+    data: { status: 'readyToIssue', decisionComment: 'OK' },
+  });
+  const detail = (await (
+    await alice.fetch(`/requests/${a.data.id}`)
+  ).json()) as {
+    data: { view: { history: { transitions: { transition: string }[] } } };
+  };
+  expect(
+    detail.data.view.history.transitions.map((entry) => entry.transition),
+  ).toEqual(['$create', 'submit', 'approve']);
+  // A new decision with a new key is checked against the current version as before.
+  expect(
+    (await cathy.fetch(`/requests/${a.data.id}/fire`, json('POST', decision)))
+      .status,
+  ).toBe(409);
 });

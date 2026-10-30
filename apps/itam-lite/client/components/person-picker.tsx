@@ -27,6 +27,7 @@ export function PersonPicker({
   onChange,
   disabled,
   invalid,
+  fieldPath,
   allowEmpty = true,
 }: {
   id: string;
@@ -35,6 +36,8 @@ export function PersonPicker({
   onChange: (value: Person | null) => void;
   disabled?: boolean;
   invalid?: boolean;
+  /** The submitted field this picker sets, so FeedbackForm can find and focus it when that field is rejected. */
+  fieldPath?: string;
   allowEmpty?: boolean;
 }) {
   const api = useApiClient();
@@ -103,6 +106,7 @@ export function PersonPicker({
         id={id}
         aria-invalid={invalid}
         aria-describedby={invalid ? `${id}-error` : undefined}
+        data-field-path={fieldPath}
         placeholder={t('devices.searchPeople')}
       />
       <ComboboxContent>

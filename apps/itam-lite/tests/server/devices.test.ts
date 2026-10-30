@@ -18,6 +18,7 @@ const test = createAppTest({
   },
 });
 
+const operationKey = () => `${Date.now()}.${randomUUID()}`;
 const json = (
   method: string,
   data: unknown,
@@ -25,6 +26,8 @@ const json = (
 ) => ({
   method,
   headers: {
+    // Every write is a new operation unless a test repeats one on purpose.
+    ...(method === 'GET' ? {} : { 'Idempotency-Key': operationKey() }),
     ...extra,
     'content-type': 'application/json',
     origin: 'http://localhost',
@@ -169,7 +172,7 @@ test('refuses a signed-in person without device permissions', async ({
           'POST',
           { ...credentials, name: 'No devices' },
           // User management is a standard write: it needs an operation key.
-          { 'Idempotency-Key': `${Date.now()}.${randomUUID()}` },
+          { 'Idempotency-Key': operationKey() },
         ),
       )
     ).status,
@@ -180,4 +183,112 @@ test('refuses a signed-in person without device permissions', async ({
     403,
   );
   expect((await member.fetch('/devices/people')).status).toBe(403);
+});
+
+test('writes a device once however often the same submission arrives', async ({
+  testApp,
+}) => {
+  const admin = await signIn(testApp, DEFAULT_ADMIN_CREDENTIALS);
+  const total = async () =>
+    (
+      (await (await admin.fetch('/devices?q=IT-T-03')).json()) as {
+        meta: { total: number };
+      }
+    ).meta.total;
+  const device = { ...laptop, assetTag: 'IT-T-0301', serialNumber: 'SN-T-301' };
+
+  // A double click: both requests carry the same operation key and arrive together.
+  const key = operationKey();
+  const first = await Promise.all(
+    [1, 2].map(() =>
+      admin.fetch('/devices', json('POST', device, { 'Idempotency-Key': key })),
+    ),
+  );
+  expect(first.map((response) => response.status)).toEqual([201, 201]);
+  const [a, b] = (await Promise.all(
+    first.map((response) => response.json()),
+  )) as { data: Device }[];
+  expect(b.data.id).toBe(a.data.id);
+  expect(
+    first
+      .map((response) => response.headers.get('Idempotency-Replayed'))
+      .sort(),
+  ).toEqual(['false', 'true']);
+  // A retry after a lost response answers the original device instead of a duplicate asset tag error.
+  const retry = await admin.fetch(
+    '/devices',
+    json('POST', device, { 'Idempotency-Key': key }),
+  );
+  expect(retry.status).toBe(201);
+  expect(retry.headers.get('Idempotency-Replayed')).toBe('true');
+  expect(((await retry.json()) as { data: Device }).data.id).toBe(a.data.id);
+  expect(await total()).toBe(1);
+
+  // The same key with different content is another request, refused rather than replayed.
+  const changed = await admin.fetch(
+    '/devices',
+    json(
+      'POST',
+      { ...device, assetTag: 'IT-T-0302', serialNumber: null },
+      { 'Idempotency-Key': key },
+    ),
+  );
+  expect(changed.status).toBe(409);
+  expect(await changed.json()).toMatchObject({
+    error: { reason: 'OPERATION_CONFLICT' },
+  });
+  // A write without a key is refused before anything is written.
+  const unkeyed = await admin.fetch('/devices', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', origin: 'http://localhost' },
+    body: JSON.stringify({
+      ...device,
+      assetTag: 'IT-T-0303',
+      serialNumber: null,
+    }),
+  });
+  expect(unkeyed.status).toBe(400);
+  expect(await unkeyed.json()).toMatchObject({
+    error: { reason: 'OPERATION_KEY_REQUIRED' },
+  });
+  expect(await total()).toBe(1);
+
+  // Editing replays the same way; a failed attempt leaves no receipt, so the corrected one goes through.
+  const editKey = operationKey();
+  const edit = (body: unknown) =>
+    admin.fetch(
+      `/devices/${a.data.id}`,
+      json('PUT', body, { 'Idempotency-Key': editKey }),
+    );
+  const edits = await Promise.all(
+    [1, 2].map(() => edit({ ...device, location: 'Room 4' })),
+  );
+  expect(edits.map((response) => response.status)).toEqual([200, 200]);
+  expect(
+    await (await admin.fetch(`/devices/${a.data.id}`)).json(),
+  ).toMatchObject({
+    data: { location: 'Room 4' },
+  });
+  const refusedKey = operationKey();
+  expect(
+    (
+      await admin.fetch(
+        '/devices',
+        json('POST', device, { 'Idempotency-Key': refusedKey }),
+      )
+    ).status,
+  ).toBe(409);
+  expect(
+    (
+      await admin.fetch(
+        '/devices',
+        json(
+          'POST',
+          { ...device, assetTag: 'IT-T-0304', serialNumber: null },
+          { 'Idempotency-Key': refusedKey },
+        ),
+      )
+    ).status,
+  ).toBe(201);
+  expect(await total()).toBe(2);
 });

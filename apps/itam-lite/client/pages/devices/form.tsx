@@ -1,9 +1,16 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router';
-import { ApiClientError, useApiClient, useToaster } from '@nocobase/app-client';
+import {
+  ApiClientError,
+  useApiClient,
+  useSubmission,
+  useToaster,
+} from '@nocobase/app-client';
+import { useAuthentication } from '@nocobase/app-plugin-authentication/client';
 import { useCan } from '@nocobase/app-plugin-authorization/client';
 import { useTranslation } from '@nocobase/i18n/client';
 import { LoaderCircle } from 'lucide-react';
+import { FeedbackForm } from '#components/feedback-form';
 import { RouteDialog } from '#components/route-dialog';
 import { PersonPicker, type Person } from '#components/person-picker';
 import { Button } from '#components/ui/button';
@@ -87,7 +94,12 @@ function Field({
       </Label>
       {children}
       {error && (
-        <p id={`${id}-error`} role='alert' className='text-sm text-destructive'>
+        // Marked as this field's own message, so FeedbackForm keeps it beside the field instead of adding another.
+        <p
+          id={`${id}-error`}
+          data-feedback-field-error
+          className='text-sm text-destructive'
+        >
           {error}
         </p>
       )}
@@ -109,7 +121,17 @@ export default function DeviceForm() {
   });
   const [fields, setFields] = useState<Fields>(initial);
   const [loading, setLoading] = useState(!creating);
-  const [busy, setBusy] = useState(false);
+  const { session } = useAuthentication();
+  // One controller for this form: Enter and the footer button share its lock, and a retry after an uncertain
+  // response reuses the operation key, so the server answers the first save instead of writing a second device.
+  const submission = useSubmission({
+    scope: `${session?.user.id}:devices:${deviceId ?? 'new'}`,
+  });
+  // Cleared in the same render as a rejected attempt's field errors, so FeedbackForm still sees that attempt's invalid
+  // fields and focuses the first one (the template's settings forms keep the same local flag).
+  const [requestBusy, setRequestBusy] = useState(false);
+  const busy = requestBusy || submission.submitting;
+  const [loadError, setLoadError] = useState<unknown>();
   const [error, setError] = useState<unknown>();
   const [errors, setErrors] = useState<Partial<Record<keyof Fields, string>>>(
     {},
@@ -147,7 +169,7 @@ export default function DeviceForm() {
         },
         (next: unknown) => {
           if (controller.signal.aborted) return;
-          setError(next);
+          setLoadError(next);
           setLoading(false);
         },
       );
@@ -177,33 +199,37 @@ export default function DeviceForm() {
     if (busy) return;
     const next = validate();
     setErrors(next);
-    const first = Object.keys(next)[0];
-    if (first) {
-      document.getElementById(`device-${first}`)?.focus();
-      return;
-    }
-    setBusy(true);
+    // FeedbackForm moves focus to the first invalid field in layout order.
+    if (Object.keys(next).length) return;
     setError(undefined);
+    const json = {
+      assetTag: fields.assetTag.trim(),
+      name: fields.name.trim(),
+      category: fields.category,
+      serialNumber: fields.serialNumber.trim() || null,
+      status: fields.status,
+      assigneeId: fields.assignee?.id ?? null,
+      location: fields.location.trim(),
+      purchaseDate: fields.purchaseDate || null,
+      notes: fields.notes.trim(),
+    };
+    setRequestBusy(true);
     try {
-      const { data } = await api.request<{ data: Device }>({
-        path: creating ? 'devices' : `devices/${deviceId}`,
-        method: creating ? 'POST' : 'PUT',
-        json: {
-          assetTag: fields.assetTag.trim(),
-          name: fields.name.trim(),
-          category: fields.category,
-          serialNumber: fields.serialNumber.trim() || null,
-          status: fields.status,
-          assigneeId: fields.assignee?.id ?? null,
-          location: fields.location.trim(),
-          purchaseDate: fields.purchaseDate || null,
-          notes: fields.notes.trim(),
-        },
-      });
+      const saved = await submission.run(json, (key, signal, body) =>
+        api.request<{ data: Device }>({
+          path: creating ? 'devices' : `devices/${deviceId}`,
+          method: creating ? 'POST' : 'PUT',
+          headers: { 'Idempotency-Key': key },
+          json: body,
+          signal,
+        }),
+      );
+      // Another entry already holds the lock.
+      if (!saved) return;
       toaster.show({
         type: 'success',
         title: t(creating ? 'devices.created' : 'devices.saved', {
-          assetTag: data.assetTag,
+          assetTag: saved.data.assetTag,
         }),
       });
       reload();
@@ -213,12 +239,10 @@ export default function DeviceForm() {
         failure instanceof ApiClientError
           ? fieldReasons[failure.reason ?? '']
           : undefined;
-      if (mapped) {
-        setErrors({ [mapped[0]]: t(mapped[1]) });
-        document.getElementById(`device-${mapped[0]}`)?.focus();
-      } else setError(failure);
+      if (mapped) setErrors({ [mapped[0]]: t(mapped[1]) });
+      else setError(failure);
     } finally {
-      setBusy(false);
+      setRequestBusy(false);
     }
   };
 
@@ -251,7 +275,7 @@ export default function DeviceForm() {
         </>
       }
     >
-      <DeviceError error={error} reading={loading} />
+      <DeviceError error={loadError} />
       {loading ? (
         <div aria-label={t('devices.loading')} className='flex flex-col gap-4'>
           {[1, 2, 3, 4].map((n) => (
@@ -259,10 +283,13 @@ export default function DeviceForm() {
           ))}
         </div>
       ) : (
-        <form
+        <FeedbackForm
           id='device-form'
           className='flex flex-col gap-4'
           noValidate
+          submitting={busy}
+          error={error}
+          errorContent={<DeviceError error={error} inline />}
           onSubmit={(event) => {
             event.preventDefault();
             void save();
@@ -277,6 +304,7 @@ export default function DeviceForm() {
             >
               <Input
                 id='device-assetTag'
+                name='assetTag'
                 autoFocus
                 disabled={busy}
                 value={fields.assetTag}
@@ -295,6 +323,7 @@ export default function DeviceForm() {
             >
               <Input
                 id='device-serialNumber'
+                name='serialNumber'
                 disabled={busy}
                 value={fields.serialNumber}
                 onChange={(event) => update('serialNumber', event.target.value)}
@@ -313,6 +342,7 @@ export default function DeviceForm() {
           >
             <Input
               id='device-name'
+              name='name'
               disabled={busy}
               value={fields.name}
               placeholder='MacBook Pro 14 M4'
@@ -375,6 +405,7 @@ export default function DeviceForm() {
           >
             <PersonPicker
               id='device-assignee'
+              fieldPath='assigneeId'
               path='devices/people'
               value={fields.assignee}
               onChange={(value) => update('assignee', value)}
@@ -386,6 +417,7 @@ export default function DeviceForm() {
             <Field id='device-location' label={t('devices.location')}>
               <Input
                 id='device-location'
+                name='location'
                 disabled={busy}
                 value={fields.location}
                 onChange={(event) => update('location', event.target.value)}
@@ -394,6 +426,7 @@ export default function DeviceForm() {
             <Field id='device-purchaseDate' label={t('devices.purchaseDate')}>
               <Input
                 id='device-purchaseDate'
+                name='purchaseDate'
                 type='date'
                 disabled={busy}
                 value={fields.purchaseDate}
@@ -404,13 +437,14 @@ export default function DeviceForm() {
           <Field id='device-notes' label={t('devices.notes')}>
             <Textarea
               id='device-notes'
+              name='notes'
               className='min-h-20'
               disabled={busy}
               value={fields.notes}
               onChange={(event) => update('notes', event.target.value)}
             />
           </Field>
-        </form>
+        </FeedbackForm>
       )}
     </RouteDialog>
   );

@@ -30,32 +30,28 @@ export const listRequests = z.object({
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
 });
 
-/** What each action sends; the server adds who did it. */
+/** What each action sends; the server adds who did it, and the `Idempotency-Key` header names the attempt. */
 export const fireRequest = z.discriminatedUnion('transition', [
   z.strictObject({
     transition: z.literal('approve'),
     input: z
       .strictObject({ decisionComment: z.string().trim().max(500).default('') })
       .default({ decisionComment: '' }),
-    requestId: z.string().min(1).max(100),
     expectVersion: z.number().int().min(0).optional(),
   }),
   z.strictObject({
     transition: z.literal('reject'),
     input: z.strictObject({ decisionComment: z.string().trim().max(500) }),
-    requestId: z.string().min(1).max(100),
     expectVersion: z.number().int().min(0).optional(),
   }),
   z.strictObject({
     transition: z.literal('issue'),
     input: z.strictObject({ deviceId: z.uuid() }),
-    requestId: z.string().min(1).max(100),
     expectVersion: z.number().int().min(0).optional(),
   }),
   z.strictObject({
     transition: z.literal('withdraw'),
     input: z.strictObject({}).default({}),
-    requestId: z.string().min(1).max(100),
     expectVersion: z.number().int().min(0).optional(),
   }),
 ]);

@@ -2,12 +2,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router';
 import {
   ApiClientError,
-  createUuid,
+  PendingSubmissionError,
   useApiClient,
+  useSubmission,
   useToaster,
 } from '@nocobase/app-client';
+import { useAuthentication } from '@nocobase/app-plugin-authentication/client';
 import { useLocale, useTranslation } from '@nocobase/i18n/client';
 import { LoaderCircle } from 'lucide-react';
+import { FeedbackForm } from '#components/feedback-form';
 import { RouteDrawer } from '#components/route-drawer';
 import { LifecycleDiagram } from '#components/lifecycle-diagram';
 import { Alert, AlertDescription } from '#components/ui/alert';
@@ -41,6 +44,7 @@ const order: Action[] = ['approve', 'reject', 'issue', 'withdraw'];
 
 /** Server reasons worded for people; anything else falls back to the HTTP status. */
 function errorKey(error: unknown) {
+  if (error instanceof PendingSubmissionError) return 'requests.errors.pending';
   if (!(error instanceof ApiClientError)) return 'requests.errors.failed';
   if (error.reason === 'REQUEST_DEVICE_UNAVAILABLE')
     return 'requests.errors.deviceUnavailable';
@@ -90,8 +94,17 @@ export default function RequestDetailPage() {
   const [devices, setDevices] =
     useState<{ id: string; assetTag: string; name: string }[]>();
   const [fieldError, setFieldError] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [key, setKey] = useState('');
+  const { session } = useAuthentication();
+  // One controller per request version: every decision on this version shares its lock and, after an uncertain
+  // response, its operation key, so a retry is answered with the first decision instead of being made twice. Once the
+  // request moves on, its version and so the scope change, and the next decision starts a new operation.
+  const submission = useSubmission({
+    scope: `${session?.user.id}:deviceRequests:${requestId}:v${detail?.request.lifecycleVersion ?? ''}`,
+  });
+  // Cleared in the same render as a rejected attempt's field errors, so FeedbackForm still sees that attempt's invalid
+  // fields and focuses the first one (the template's settings forms keep the same local flag).
+  const [requestBusy, setRequestBusy] = useState(false);
+  const busy = requestBusy || submission.submitting;
   const reload = useCallback(() => setRevision((n) => n + 1), []);
 
   useEffect(() => {
@@ -124,7 +137,6 @@ export default function RequestDetailPage() {
     setComment('');
     setDeviceId('');
     setFieldError('');
-    setKey(createUuid());
     if (next === 'issue') {
       setDevices(undefined);
       void api
@@ -135,17 +147,15 @@ export default function RequestDetailPage() {
     }
   };
   const confirm = async () => {
-    if (!action || !detail) return;
+    if (!action || !detail || busy) return;
     if (action === 'reject' && !comment.trim())
       return setFieldError(t('requests.errors.commentRequired'));
     if (action === 'issue' && !deviceId)
       return setFieldError(t('requests.errors.deviceRequired'));
-    setBusy(true);
+    setRequestBusy(true);
     try {
-      await api.request({
-        path: `requests/${requestId}/fire`,
-        method: 'POST',
-        json: {
+      const done = await submission.run(
+        {
           transition: action,
           input:
             action === 'issue'
@@ -153,10 +163,19 @@ export default function RequestDetailPage() {
               : action === 'withdraw'
                 ? {}
                 : { decisionComment: comment.trim() },
-          requestId: key,
           expectVersion: detail.request.lifecycleVersion,
         },
-      });
+        (key, signal, json) =>
+          api.request({
+            path: `requests/${requestId}/fire`,
+            method: 'POST',
+            json,
+            headers: { 'Idempotency-Key': key },
+            signal,
+          }),
+      );
+      // Another entry already holds the lock.
+      if (!done) return;
       toaster.show({
         type: 'success',
         title: t('requests.done', { requestNo: detail.request.requestNo }),
@@ -177,7 +196,7 @@ export default function RequestDetailPage() {
           reload();
       }
     } finally {
-      setBusy(false);
+      setRequestBusy(false);
     }
   };
 
@@ -322,70 +341,94 @@ export default function RequestDetailPage() {
             </DialogTitle>
             <DialogDescription>{request?.requestNo}</DialogDescription>
           </DialogHeader>
-          {(action === 'approve' || action === 'reject') && (
-            <div className='flex flex-col gap-2'>
-              <Label htmlFor='request-comment'>
-                {t(
-                  action === 'reject'
-                    ? 'requests.commentRequired'
-                    : 'requests.commentOptional',
-                )}
-              </Label>
-              <Textarea
-                id='request-comment'
-                value={comment}
-                onChange={(event) => {
-                  setComment(event.target.value);
-                  setFieldError('');
-                }}
-                aria-invalid={!!fieldError}
-              />
-            </div>
-          )}
-          {action === 'issue' && (
-            <div className='flex flex-col gap-2'>
-              <Label htmlFor='request-device'>
-                {t('requests.chooseDevice')}
-              </Label>
-              {devices && !devices.length ? (
-                <p className='text-sm text-muted-foreground'>
-                  {t('requests.noIssuableDevices')}
-                </p>
-              ) : (
-                <Select
-                  value={deviceId}
-                  onValueChange={(value) => {
-                    setDeviceId(String(value));
+          {/* The confirm button submits this form, so Enter and a second click share one submission. */}
+          <FeedbackForm
+            id='request-action-form'
+            className='flex flex-col gap-4 empty:hidden'
+            noValidate
+            submitting={busy}
+            onSubmit={(event) => {
+              event.preventDefault();
+              void confirm();
+            }}
+          >
+            {(action === 'approve' || action === 'reject') && (
+              <div className='flex flex-col gap-2'>
+                <Label htmlFor='request-comment'>
+                  {t(
+                    action === 'reject'
+                      ? 'requests.commentRequired'
+                      : 'requests.commentOptional',
+                  )}
+                </Label>
+                <Textarea
+                  id='request-comment'
+                  name='decisionComment'
+                  value={comment}
+                  onChange={(event) => {
+                    setComment(event.target.value);
                     setFieldError('');
                   }}
-                >
-                  <SelectTrigger
-                    id='request-device'
-                    className='w-full'
-                    aria-invalid={!!fieldError}
+                  aria-invalid={!!fieldError}
+                  aria-describedby={
+                    fieldError ? 'request-action-error' : undefined
+                  }
+                />
+              </div>
+            )}
+            {action === 'issue' && (
+              <div className='flex flex-col gap-2'>
+                <Label htmlFor='request-device'>
+                  {t('requests.chooseDevice')}
+                </Label>
+                {devices && !devices.length ? (
+                  <p className='text-sm text-muted-foreground'>
+                    {t('requests.noIssuableDevices')}
+                  </p>
+                ) : (
+                  <Select
+                    value={deviceId}
+                    onValueChange={(value) => {
+                      setDeviceId(String(value));
+                      setFieldError('');
+                    }}
                   >
-                    <SelectValue>
-                      {devices?.find((device) => device.id === deviceId)
-                        ? `${devices.find((device) => device.id === deviceId)!.assetTag} · ${devices.find((device) => device.id === deviceId)!.name}`
-                        : t('requests.chooseDevicePlaceholder')}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(devices ?? []).map((device) => (
-                      <SelectItem key={device.id} value={device.id}>
-                        {device.assetTag} · {device.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
-          )}
-          {fieldError && (
-            <p role='alert' className='text-sm text-destructive'>
-              {fieldError}
-            </p>
-          )}
+                    <SelectTrigger
+                      id='request-device'
+                      data-field-path='deviceId'
+                      className='w-full'
+                      aria-invalid={!!fieldError}
+                      aria-describedby={
+                        fieldError ? 'request-action-error' : undefined
+                      }
+                    >
+                      <SelectValue>
+                        {devices?.find((device) => device.id === deviceId)
+                          ? `${devices.find((device) => device.id === deviceId)!.assetTag} · ${devices.find((device) => device.id === deviceId)!.name}`
+                          : t('requests.chooseDevicePlaceholder')}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(devices ?? []).map((device) => (
+                        <SelectItem key={device.id} value={device.id}>
+                          {device.assetTag} · {device.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            )}
+            {fieldError && (
+              <p
+                id='request-action-error'
+                data-feedback-field-error
+                className='text-sm text-destructive'
+              >
+                {fieldError}
+              </p>
+            )}
+          </FeedbackForm>
           <DialogFooter>
             <Button
               variant='outline'
@@ -394,7 +437,7 @@ export default function RequestDetailPage() {
             >
               {t('requests.cancel')}
             </Button>
-            <Button disabled={busy} onClick={() => void confirm()}>
+            <Button type='submit' form='request-action-form' disabled={busy}>
               {busy && <LoaderCircle className='animate-spin' />}
               {t('requests.confirm')}
             </Button>

@@ -38,8 +38,10 @@ import {
   listRequests,
   requestId,
   requestSchema,
+  rowSchema,
 } from '../requests/schemas.js';
 import { requestError, toApiError } from '../requests/service.js';
+import { businessMutations } from '../mutations.js';
 
 type Env = AuthEnv & {
   Variables: AuthorizationEnv['Variables'] & {
@@ -52,6 +54,8 @@ const meta = z.object({
   pageSize: z.number(),
   total: z.number(),
 });
+/** Documents the operation key; `businessMutations` reads it and refuses a write without one. */
+const operationKey = z.object({ 'idempotency-key': z.string().optional() });
 const errors = {
   ...apiErrorResponses,
   '400': apiErrorResponse(400),
@@ -76,6 +80,7 @@ export const requestRoutes: AppApiRouteContribution<Application> =
     const authz = app.container.resolve(authorizationToken);
     const service = app.container.resolve(requestServiceToken);
     const runtime = app.container.resolve(lifecycleRuntimeToken);
+    const mutate = businessMutations(app);
     const workflows = new WorkflowService(
       app.container.resolve(databaseManagerToken),
       runtime,
@@ -148,19 +153,31 @@ export const requestRoutes: AppApiRouteContribution<Application> =
         summary: 'Submit a device request for yourself',
         responses: { '201': dataResponse(requestSchema), ...errors },
       }),
-      apiValidator(
-        'header',
-        z.object({ 'idempotency-key': z.string().min(1).max(100) }),
-      ),
+      apiValidator('header', operationKey),
       apiValidator('json', createRequest),
       async (c) => {
-        const id = await service.submit(
-          c.req.valid('json'),
-          userId(c),
-          c.req.valid('header')['idempotency-key'],
+        const input = c.req.valid('json');
+        const data = await mutate(c, {
+          operation: 'deviceRequests:create',
+          input,
+          authorizeReplay: async (request: { id: string }) => {
+            await service.find(
+              await service.policy(c.get('authz'), 'read'),
+              request.id,
+            );
+          },
+          // The operation key is also the submit transition's request id, as it was before the receipt existed.
+          execute: async (transaction, key) => {
+            const scoped = service.withConnection(transaction);
+            const id = await scoped.submit(input, userId(c), key, transaction);
+            return scoped.find(c.get('requestPolicy'), id);
+          },
+        });
+        // The stored row is presented after the receipt's transaction, replays included.
+        return c.json(
+          { data: (await service.present([rowSchema.parse(data)]))[0] },
+          201,
         );
-        const row = await service.find(c.get('requestPolicy'), id);
-        return c.json({ data: (await service.present([row]))[0] }, 201);
       },
     );
 
@@ -271,40 +288,55 @@ export const requestRoutes: AppApiRouteContribution<Application> =
         responses: { '200': dataResponse(requestSchema), ...errors },
       }),
       apiValidator('param', requestId),
+      apiValidator('header', operationKey),
       apiValidator('json', fireRequest),
       async (c) => {
+        const { id } = c.req.valid('param');
         const body = c.req.valid('json');
-        const row = await service.find(
-          c.get('requestPolicy'),
-          c.req.valid('param').id,
-        );
-        if (body.transition === 'issue') {
-          const devicePolicy = await service.optionalPolicy(
-            c.get('authz'),
-            'issue',
-            'devices',
-          );
-          if (!devicePolicy)
-            throw requestError('PERMISSION_DENIED', 'REQUEST_ACTION_DENIED');
-          await service.issue(
-            row,
-            body.input.deviceId,
-            devicePolicy,
-            userId(c),
-            body.requestId,
-            body.expectVersion,
-          );
-        } else
-          await service.fire(
-            row,
-            body.transition,
-            body.input,
-            userId(c),
-            body.requestId,
-            body.expectVersion,
-          );
-        const updated = await service.find(c.get('requestPolicy'), row.id);
-        return c.json({ data: (await service.present([updated]))[0] });
+        // Issuing also writes the device, so it needs the device side of the issue action on every attempt.
+        const devicePolicy =
+          body.transition === 'issue'
+            ? await service.optionalPolicy(c.get('authz'), 'issue', 'devices')
+            : undefined;
+        if (body.transition === 'issue' && !devicePolicy)
+          throw requestError('PERMISSION_DENIED', 'REQUEST_ACTION_DENIED');
+        const data = await mutate(c, {
+          operation: `deviceRequests/${id}:fire`,
+          input: body,
+          // A replay answers the original result without asking the lifecycle again: only visibility is checked now.
+          authorizeReplay: async () => {
+            await service.find(c.get('requestPolicy'), id);
+          },
+          // The operation key is the transition's request id, so the lifecycle's own log sees one decision too.
+          execute: async (transaction, key) => {
+            const scoped = service.withConnection(transaction);
+            const row = await scoped.find(c.get('requestPolicy'), id);
+            if (body.transition === 'issue')
+              await scoped.issue(
+                row,
+                body.input.deviceId,
+                devicePolicy!,
+                userId(c),
+                key,
+                body.expectVersion,
+                transaction,
+              );
+            else
+              await scoped.fire(
+                row,
+                body.transition,
+                body.input,
+                userId(c),
+                key,
+                body.expectVersion,
+                transaction,
+              );
+            return scoped.find(c.get('requestPolicy'), row.id);
+          },
+        });
+        return c.json({
+          data: (await service.present([rowSchema.parse(data)]))[0],
+        });
       },
     );
 

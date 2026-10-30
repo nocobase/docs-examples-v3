@@ -18,6 +18,7 @@ import {
 } from '@nocobase/app-plugin-authorization/server';
 import type { RepositoryPolicy } from '@nocobase/db';
 import { deviceServiceToken } from '../providers/devices.js';
+import { businessMutations } from '../mutations.js';
 import { deviceError } from '../devices/service.js';
 import type { DeviceAction } from '../devices/permissions.js';
 import {
@@ -26,6 +27,7 @@ import {
   deviceSchema,
   listDevices,
   listPeople,
+  rowSchema,
 } from '../devices/schemas.js';
 
 type Env = {
@@ -37,6 +39,8 @@ const meta = z.object({
   pageSize: z.number(),
   total: z.number(),
 });
+/** Documents the operation key; `businessMutations` reads it and refuses a write without one. */
+const operationKey = z.object({ 'idempotency-key': z.string().optional() });
 const errors = {
   ...apiErrorResponses,
   '400': apiErrorResponse(400),
@@ -51,6 +55,7 @@ export const deviceRoutes: AppApiRouteContribution<Application> =
     const auth = app.container.resolve(authenticationToken);
     const authz = app.container.resolve(authorizationToken);
     const service = app.container.resolve(deviceServiceToken);
+    const mutate = businessMutations(app);
     devices.use('*', auth.required(), authz.middleware());
     // Authorization runs before the validators, so a person without the action learns nothing about the input.
     const gate =
@@ -141,14 +146,32 @@ export const deviceRoutes: AppApiRouteContribution<Application> =
         summary: 'Register a device',
         responses: { '201': dataResponse(deviceSchema), ...errors },
       }),
+      apiValidator('header', operationKey),
       apiValidator('json', deviceInput),
       async (c) => {
-        const row = await service.create(
-          c.get('devicePolicy'),
-          c.req.valid('json'),
-        );
+        const input = c.req.valid('json');
+        const data = await mutate(c, {
+          operation: 'devices:create',
+          input,
+          // A replay shows the device only while the person may still read it.
+          authorizeReplay: async (device: { id: string }) => {
+            await service.find(
+              await service.policy(c.get('authz'), 'read'),
+              device.id,
+            );
+          },
+          // Only the write runs in the receipt's transaction; the stored row is presented afterwards, replays included.
+          execute: (transaction) =>
+            service
+              .withConnection(transaction)
+              .create(c.get('devicePolicy'), input),
+        });
         return c.json(
-          { data: (await service.present([row], c.get('authz')))[0] },
+          {
+            data: (
+              await service.present([rowSchema.parse(data)], c.get('authz'))
+            )[0],
+          },
           201,
         );
       },
@@ -164,15 +187,26 @@ export const deviceRoutes: AppApiRouteContribution<Application> =
         responses: { '200': dataResponse(deviceSchema), ...errors },
       }),
       apiValidator('param', deviceId),
+      apiValidator('header', operationKey),
       apiValidator('json', deviceInput),
       async (c) => {
-        const row = await service.update(
-          c.get('devicePolicy'),
-          c.req.valid('param').id,
-          c.req.valid('json'),
-        );
+        const { id } = c.req.valid('param');
+        const input = c.req.valid('json');
+        const data = await mutate(c, {
+          operation: `devices/${id}:update`,
+          input,
+          authorizeReplay: async () => {
+            await service.find(c.get('devicePolicy'), id);
+          },
+          execute: (transaction) =>
+            service
+              .withConnection(transaction)
+              .update(c.get('devicePolicy'), id, input),
+        });
         return c.json({
-          data: (await service.present([row], c.get('authz')))[0],
+          data: (
+            await service.present([rowSchema.parse(data)], c.get('authz'))
+          )[0],
         });
       },
     );

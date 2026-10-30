@@ -69,10 +69,19 @@ export function toApiError(error: unknown): unknown {
 
 export class DeviceRequestService {
   constructor(
-    private readonly db: DatabaseManager,
+    private readonly db: DatabaseManager | DatabaseConnection,
     private readonly users: UserAdministrationService,
     private readonly runtime: LifecycleRuntime,
   ) {}
+
+  /** The same service reading through `connection`, such as the transaction of a submission receipt. */
+  withConnection(connection: DatabaseConnection): DeviceRequestService {
+    return new DeviceRequestService(
+      connection,
+      this.users.withConnection(connection),
+      this.runtime,
+    );
+  }
 
   async policy(
     authz: AuthorizationContext,
@@ -181,7 +190,8 @@ export class DeviceRequestService {
   }
 
   /**
-   * Creates the request and submits it in one transaction. The lifecycle decides whether it needs approval from the
+   * Creates the request and submits it in `transaction`, the caller's (the submission receipt's), so a retried
+   * submission never creates a second request. The lifecycle decides whether it needs approval from the
    * administrator-set rules and the number of devices the requester already uses, counted here inside the transaction.
    */
   async submit(
@@ -191,7 +201,8 @@ export class DeviceRequestService {
       neededBy: string | null;
     },
     userId: string,
-    requestId: string,
+    requestId: string | undefined,
+    transaction: DatabaseConnection,
   ) {
     const actor = { id: userId };
     if (input.neededBy && input.neededBy < businessToday())
@@ -200,43 +211,41 @@ export class DeviceRequestService {
         'REQUEST_NEEDED_BY_PAST',
         'neededBy',
       );
-    return this.runtime.transaction(async (tx) => {
-      const connection = tx.handle as DatabaseConnection;
-      const count = await connection.repository('deviceRequests').count({});
-      const now = new Date();
-      const id = randomUUID();
-      await tx.create(
-        REQUEST_LIFECYCLE,
-        {
-          id,
-          requestNo: `REQ-${String(count + 1).padStart(4, '0')}`,
-          requesterId: userId,
-          category: input.category,
-          reason: input.reason,
-          neededBy: input.neededBy,
-          needsApproval: false,
-          decisionComment: '',
-          createdAt: now,
-          updatedAt: now,
-        },
-        { actor },
-      );
-      const heldDevices = await connection.repository('devices').count({
-        filter: buildFilter((f) =>
-          f.and([
-            f.string('assigneeId').eq(userId),
-            f.string('status').eq('inUse'),
-          ]),
-        ),
-      });
-      await tx.fire(REQUEST_LIFECYCLE, id, 'submit', {
-        actor,
-        manual: true,
-        input: { heldDevices },
-        requestId,
-      });
-      return id;
+    const count = await transaction.repository('deviceRequests').count({});
+    const now = new Date();
+    const id = randomUUID();
+    await this.runtime.create(
+      REQUEST_LIFECYCLE,
+      {
+        id,
+        requestNo: `REQ-${String(count + 1).padStart(4, '0')}`,
+        requesterId: userId,
+        category: input.category,
+        reason: input.reason,
+        neededBy: input.neededBy,
+        needsApproval: false,
+        decisionComment: '',
+        createdAt: now,
+        updatedAt: now,
+      },
+      { actor, transaction },
+    );
+    const heldDevices = await transaction.repository('devices').count({
+      filter: buildFilter((f) =>
+        f.and([
+          f.string('assigneeId').eq(userId),
+          f.string('status').eq('inUse'),
+        ]),
+      ),
     });
+    await this.runtime.fire(REQUEST_LIFECYCLE, id, 'submit', {
+      actor,
+      manual: true,
+      input: { heldDevices },
+      ...(requestId ? { requestId } : {}),
+      transaction,
+    });
+    return id;
   }
 
   /**
@@ -248,46 +257,45 @@ export class DeviceRequestService {
     deviceId: string,
     devicePolicy: RepositoryPolicy,
     userId: string,
-    requestId: string,
-    expectVersion?: number,
+    requestId: string | undefined,
+    expectVersion: number | undefined,
+    transaction: DatabaseConnection,
   ) {
-    return this.runtime.transaction(async (tx) => {
-      const connection = tx.handle as DatabaseConnection;
-      const device = await connection
-        .repository('devices')
-        .withPolicy(devicePolicy)
-        .findOne({ filter: { id: deviceId } });
-      if (
-        !device ||
-        device.status !== 'inStock' ||
-        device.category !== row.category
-      )
-        throw requestError(
-          'INVALID_ARGUMENT',
-          'REQUEST_DEVICE_UNAVAILABLE',
-          'input.deviceId',
-        );
-      await tx.fire(REQUEST_LIFECYCLE, row.id, 'issue', {
-        actor: { id: userId },
-        manual: true,
-        input: { deviceId },
-        requestId,
-        ...(expectVersion === undefined
-          ? {}
-          : { expect: { version: expectVersion } }),
-      });
-      await connection
-        .repository('devices')
-        .withPolicy(devicePolicy)
-        .updateOne({
-          filter: { id: deviceId },
-          values: {
-            status: 'inUse',
-            assigneeId: row.requesterId,
-            updatedAt: new Date(),
-          },
-        });
+    const device = await transaction
+      .repository('devices')
+      .withPolicy(devicePolicy)
+      .findOne({ filter: { id: deviceId } });
+    if (
+      !device ||
+      device.status !== 'inStock' ||
+      device.category !== row.category
+    )
+      throw requestError(
+        'INVALID_ARGUMENT',
+        'REQUEST_DEVICE_UNAVAILABLE',
+        'input.deviceId',
+      );
+    await this.runtime.fire(REQUEST_LIFECYCLE, row.id, 'issue', {
+      actor: { id: userId },
+      manual: true,
+      input: { deviceId },
+      ...(requestId ? { requestId } : {}),
+      ...(expectVersion === undefined
+        ? {}
+        : { expect: { version: expectVersion } }),
+      transaction,
     });
+    await transaction
+      .repository('devices')
+      .withPolicy(devicePolicy)
+      .updateOne({
+        filter: { id: deviceId },
+        values: {
+          status: 'inUse',
+          assigneeId: row.requesterId,
+          updatedAt: new Date(),
+        },
+      });
   }
 
   async fire(
@@ -295,17 +303,19 @@ export class DeviceRequestService {
     transition: 'approve' | 'reject' | 'withdraw',
     input: Record<string, string>,
     userId: string,
-    requestId: string,
-    expectVersion?: number,
+    requestId: string | undefined,
+    expectVersion: number | undefined,
+    transaction: DatabaseConnection,
   ) {
     await this.runtime.fire(REQUEST_LIFECYCLE, row.id, transition, {
       actor: { id: userId },
       manual: true,
       input,
-      requestId,
+      ...(requestId ? { requestId } : {}),
       ...(expectVersion === undefined
         ? {}
         : { expect: { version: expectVersion } }),
+      transaction,
     });
   }
 

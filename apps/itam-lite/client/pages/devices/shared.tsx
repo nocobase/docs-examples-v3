@@ -1,4 +1,4 @@
-import { ApiClientError } from '@nocobase/app-client';
+import { ApiClientError, PendingSubmissionError } from '@nocobase/app-client';
 import { useTranslation } from '@nocobase/i18n/client';
 import { CircleCheck, CircleDot, Wrench, Archive } from 'lucide-react';
 import { StatusBadge } from '#components/status-badge';
@@ -30,39 +30,51 @@ export function DeviceStatusBadge({ status }: { status: DeviceStatus }) {
   );
 }
 
-/** One alert for any request failure, worded by its HTTP status. */
+/**
+ * One alert for any request failure, worded by its HTTP status. `inline` gives only the wording, for a FeedbackForm's
+ * `errorContent`: the form already announces its own message, so a second alert would be read out twice.
+ */
 export function DeviceError({
   error,
   retry,
   reading = false,
+  inline = false,
 }: {
   error: unknown;
   retry?: () => void;
   reading?: boolean;
+  inline?: boolean;
 }) {
   const { t } = useTranslation();
   if (!error) return null;
   const status = error instanceof ApiClientError ? error.status : 0;
   const key =
-    status === 403
-      ? 'devices.errors.denied'
-      : status === 404
-        ? 'devices.errors.missing'
-        : status === 400
-          ? 'devices.errors.invalid'
-          : reading
-            ? 'devices.errors.loadFailed'
-            : 'devices.errors.failed';
-  return (
+    error instanceof PendingSubmissionError
+      ? 'devices.errors.pending'
+      : status === 403
+        ? 'devices.errors.denied'
+        : status === 404
+          ? 'devices.errors.missing'
+          : status === 400
+            ? 'devices.errors.invalid'
+            : reading
+              ? 'devices.errors.loadFailed'
+              : 'devices.errors.failed';
+  const content = (
+    <>
+      {t(key)}
+      {retry && ![403, 404].includes(status) && (
+        <Button variant='outline' size='sm' onClick={retry}>
+          {t('devices.errors.retry')}
+        </Button>
+      )}
+    </>
+  );
+  return inline ? (
+    content
+  ) : (
     <Alert variant='destructive'>
-      <AlertDescription>
-        {t(key)}
-        {retry && ![403, 404].includes(status) && (
-          <Button variant='outline' size='sm' onClick={retry}>
-            {t('devices.errors.retry')}
-          </Button>
-        )}
-      </AlertDescription>
+      <AlertDescription>{content}</AlertDescription>
     </Alert>
   );
 }

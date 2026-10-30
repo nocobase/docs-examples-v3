@@ -39,6 +39,11 @@ export class DeviceService {
     private readonly users: UserAdministrationService,
   ) {}
 
+  /** The same service reading and writing through `connection`, such as the transaction of a submission receipt. */
+  withConnection(connection: DatabaseConnection): DeviceService {
+    return new DeviceService(connection, this.users.withConnection(connection));
+  }
+
   /** The record policy a person holds for one device action; refuses when the action is not granted. */
   async policy(
     authz: AuthorizationContext,

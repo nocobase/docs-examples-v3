@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router';
 import {
   ApiClientError,
-  createUuid,
+  PendingSubmissionError,
   useApiClient,
+  useSubmission,
   useToaster,
 } from '@nocobase/app-client';
+import { useAuthentication } from '@nocobase/app-plugin-authentication/client';
 import { useTranslation } from '@nocobase/i18n/client';
 import { LoaderCircle } from 'lucide-react';
+import { FeedbackForm } from '#components/feedback-form';
 import { RouteDialog } from '#components/route-dialog';
 import { Button } from '#components/ui/button';
 import { Input } from '#components/ui/input';
@@ -36,12 +39,20 @@ export default function NewRequest() {
   const [reasonError, setReasonError] = useState('');
   const [neededBy, setNeededBy] = useState('');
   const [neededByError, setNeededByError] = useState('');
-  const [busy, setBusy] = useState(false);
+  const { session } = useAuthentication();
+  // One controller for this form: Enter and the footer button share its lock, and a retry after an uncertain
+  // response reuses the operation key, so the server answers the first submission instead of filing a second request.
+  const submission = useSubmission({
+    scope: `${session?.user.id}:deviceRequests:new`,
+  });
+  // Cleared in the same render as a rejected attempt's field errors, so FeedbackForm still sees that attempt's invalid
+  // fields and focuses the first one (the template's settings forms keep the same local flag).
+  const [requestBusy, setRequestBusy] = useState(false);
+  const busy = requestBusy || submission.submitting;
   const [error, setError] = useState<unknown>();
-  // One key per logical submission: a retry after an uncertain response is not a second request.
-  const [key] = useState(() => createUuid());
   const closeTo = `/requests${search}`;
   const submit = async () => {
+    if (busy) return;
     const text = reason.trim();
     const problem = !text
       ? t('requests.errors.reasonRequired')
@@ -49,19 +60,25 @@ export default function NewRequest() {
         ? t('requests.errors.reasonLong')
         : '';
     setReasonError(problem);
-    if (problem) {
-      document.getElementById('request-reason')?.focus();
-      return;
-    }
-    setBusy(true);
+    // FeedbackForm moves focus to the first invalid field in layout order.
+    if (problem) return;
     setError(undefined);
+    setRequestBusy(true);
     try {
-      const { data } = await api.request<{ data: DeviceRequest }>({
-        path: 'requests',
-        method: 'POST',
-        json: { category, reason: text, neededBy: neededBy || null },
-        headers: { 'Idempotency-Key': key },
-      });
+      const submitted = await submission.run(
+        { category, reason: text, neededBy: neededBy || null },
+        (key, signal, json) =>
+          api.request<{ data: DeviceRequest }>({
+            path: 'requests',
+            method: 'POST',
+            json,
+            headers: { 'Idempotency-Key': key },
+            signal,
+          }),
+      );
+      // Another entry already holds the lock.
+      if (!submitted) return;
+      const { data } = submitted;
       toaster.show({
         type: 'success',
         title: t('requests.submitted', { requestNo: data.requestNo }),
@@ -74,14 +91,14 @@ export default function NewRequest() {
         failure.reason === 'REQUEST_NEEDED_BY_PAST'
       ) {
         setNeededByError(t('requests.errors.neededByPast'));
-        document.getElementById('request-neededBy')?.focus();
         return;
       }
       setError(failure);
     } finally {
-      setBusy(false);
+      setRequestBusy(false);
     }
   };
+
   return (
     <RouteDialog
       title={t('requests.new')}
@@ -103,11 +120,19 @@ export default function NewRequest() {
         </>
       }
     >
-      <DeviceError error={error} />
-      <form
+      <FeedbackForm
         id='request-form'
         className='flex flex-col gap-4'
         noValidate
+        submitting={busy}
+        error={error}
+        errorContent={
+          error instanceof PendingSubmissionError ? (
+            t('requests.errors.pending')
+          ) : (
+            <DeviceError error={error} inline />
+          )
+        }
         onSubmit={(event) => {
           event.preventDefault();
           void submit();
@@ -140,6 +165,7 @@ export default function NewRequest() {
           </Label>
           <Textarea
             id='request-reason'
+            name='reason'
             autoFocus
             className='min-h-24'
             placeholder={t('requests.reasonPlaceholder')}
@@ -155,7 +181,7 @@ export default function NewRequest() {
           {reasonError && (
             <p
               id='request-reason-error'
-              role='alert'
+              data-feedback-field-error
               className='text-sm text-destructive'
             >
               {reasonError}
@@ -166,6 +192,7 @@ export default function NewRequest() {
           <Label htmlFor='request-neededBy'>{t('requests.neededBy')}</Label>
           <Input
             id='request-neededBy'
+            name='neededBy'
             type='date'
             className='w-48'
             disabled={busy}
@@ -182,14 +209,14 @@ export default function NewRequest() {
           {neededByError && (
             <p
               id='request-neededBy-error'
-              role='alert'
+              data-feedback-field-error
               className='text-sm text-destructive'
             >
               {neededByError}
             </p>
           )}
         </div>
-      </form>
+      </FeedbackForm>
     </RouteDialog>
   );
 }

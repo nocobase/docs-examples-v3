@@ -70,6 +70,8 @@ export const requestsEn = {
     denied: 'You do not have permission to do this.',
     missing: 'This request does not exist or you cannot see it.',
     failed: 'That did not work. Try again.',
+    pending:
+      'The last attempt may already have gone through. Check the request, or try again without changing anything.',
   },
   readPermission: 'View requests',
   createPermission: 'Submit requests',
@@ -149,6 +151,7 @@ export const requestsZh: typeof requestsEn = {
     denied: '你没有权限执行这个操作。',
     missing: '申请不存在，或者你无权查看。',
     failed: '操作没有成功，请重试。',
+    pending: '上一次操作可能已经成功。请先查看申请，或者不做修改直接再试一次。',
   },
   readPermission: '查看申请',
   createPermission: '提交申请',

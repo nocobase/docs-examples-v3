@@ -19,6 +19,7 @@ const test = createAppTest({
   },
 });
 
+const operationKey = () => `${Date.now()}.${randomUUID()}`;
 const json = (
   method: string,
   data: unknown,
@@ -28,6 +29,8 @@ const json = (
   headers: {
     'content-type': 'application/json',
     origin: 'http://localhost',
+    // Every write is a new operation unless a test repeats one on purpose.
+    ...(method === 'GET' ? {} : { 'Idempotency-Key': operationKey() }),
     ...headers,
   },
   body: JSON.stringify(data),
@@ -53,7 +56,7 @@ async function person(
           'POST',
           { ...credentials, name: id },
           // User management is a standard write: it needs an operation key.
-          { 'Idempotency-Key': `${Date.now()}.${randomUUID()}` },
+          { 'Idempotency-Key': operationKey() },
         ),
       )
     ).status,
@@ -75,16 +78,13 @@ const submit = async (session: Session, category: string) =>
         json(
           'POST',
           { category, reason: 'Needed for work' },
-          { 'Idempotency-Key': randomUUID() },
+          { 'Idempotency-Key': operationKey() },
         ),
       )
     ).json()) as { data: DeviceRequest }
   ).data;
 const fire = (session: Session, id: string, body: Record<string, unknown>) =>
-  session.fetch(
-    `/requests/${id}/fire`,
-    json('POST', { requestId: randomUUID(), ...body }),
-  );
+  session.fetch(`/requests/${id}/fire`, json('POST', body));
 
 // docs/design.md §6, checked through the API with ordinary accounts: what the pages hide, the server refuses.
 test('limits each role to its own records and actions, whatever the page shows', async ({

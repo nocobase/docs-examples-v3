@@ -70,6 +70,8 @@ export const devicesEn = {
     missing: 'This device no longer exists.',
     loadFailed: 'The devices could not be loaded.',
     failed: 'The change could not be saved. Try again.',
+    pending:
+      'The last save may already have gone through. Check the device list, or save again without changing anything.',
     retry: 'Try again',
   },
   readPermission: 'View devices',
@@ -151,6 +153,8 @@ export const devicesZh: typeof devicesEn = {
     missing: '这台设备已经不存在。',
     loadFailed: '设备加载失败。',
     failed: '保存失败，请重试。',
+    pending:
+      '上一次保存可能已经成功。请先查看设备台账，或者不做修改直接再保存一次。',
     retry: '重试',
   },
   readPermission: '查看设备',
