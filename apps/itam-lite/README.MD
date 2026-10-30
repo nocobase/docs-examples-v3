@@ -21,9 +21,10 @@ Open the full `Local:` URL printed by `pnpm dev`, including `/main/`, and sign i
 
 ## Chapters
 
-| Chapter | Checkpoint | What it adds |
-| --- | --- | --- |
-| [4 Create the app](https://docs.nocobase.com/zh-CN/guides/create-app/) | `feat(itam-lite): create the application` | The default template, configured for SQLite |
+| Chapter                                                                            | Checkpoint                                | What it adds                                                           |
+| ---------------------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------- |
+| [4 Create the app](https://docs.nocobase.com/zh-CN/guides/create-app/)             | `feat(itam-lite): create the application` | The default template, configured for SQLite                            |
+| [5 Write a design doc](https://docs.nocobase.com/zh-CN/guides/write-a-design-doc/) | `docs(itam-lite): add the system design`  | [`docs/design.md`](docs/design.md) (Chinese), indexed from `AGENTS.md` |
 
 ---
 

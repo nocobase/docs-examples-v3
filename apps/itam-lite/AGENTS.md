@@ -118,12 +118,13 @@ When the built-in mechanism genuinely cannot express what is being asked, changi
 
 ## Index
 
-| Read                                                                   | When                                                                                                         |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [.agents/rules/workspace.md](.agents/rules/workspace.md)               | Adding internal packages or changing workspace development and validation                                    |
-| [.agents/rules/components.md](.agents/rules/components.md)             | Adding or changing a component, a shadcn primitive, a UI Library item, or the visual design                  |
-| [.agents/rules/shell.md](.agents/rules/shell.md)                       | Changing layouts, the header, sidebar, breadcrumbs, the account menu or loading indicators                   |
-| [.agents/rules/build-and-deploy.md](.agents/rules/build-and-deploy.md) | Changing the build, packing a deployment, the Docker image, `CDN_BASE_URL`, or building for another platform |
+| Read                                                                   | When                                                                                                                                                        |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [docs/design.md](docs/design.md)                                       | Before any business change: the ITAM Lite roles, objects, request workflow, pages, permissions and scope. Update it first when a request changes the design |
+| [.agents/rules/workspace.md](.agents/rules/workspace.md)               | Adding internal packages or changing workspace development and validation                                                                                   |
+| [.agents/rules/components.md](.agents/rules/components.md)             | Adding or changing a component, a shadcn primitive, a UI Library item, or the visual design                                                                 |
+| [.agents/rules/shell.md](.agents/rules/shell.md)                       | Changing layouts, the header, sidebar, breadcrumbs, the account menu or loading indicators                                                                  |
+| [.agents/rules/build-and-deploy.md](.agents/rules/build-and-deploy.md) | Changing the build, packing a deployment, the Docker image, `CDN_BASE_URL`, or building for another platform                                                |
 
 ## Visible and manageable role assignments
 
