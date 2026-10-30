@@ -19,6 +19,8 @@ export const deviceServiceToken =
 export default class DevicesProvider extends ServiceProvider<Application> {
   readonly name = 'itam-lite/devices';
   override async boot() {
+    // A host without the authorization plugin (the template's embedded-runtime tests) has no business permissions.
+    if (!this.app.container.has(authorizationToken)) return;
     const authz = this.app.container.resolve(authorizationToken);
     authz.database.collections.add({ name: 'devices', title: label('title') });
     authz.recordAccess.define(assignedDevices);

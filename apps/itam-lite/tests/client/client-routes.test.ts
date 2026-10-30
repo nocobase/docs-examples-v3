@@ -53,11 +53,15 @@ describe('app client routes', () => {
     // The landing page and the inbox opted out of page authorization, so they are reachable by every signed-in user.
     expect(pageAuthorizations(resolved.routes)).toEqual([
       { name: 'home', authorizedAs: null },
-      { name: 'inbox', authorizedAs: null },
       ...['devices', 'deviceCreate', 'deviceEdit'].map((name) => ({
         name,
         authorizedAs: 'devices',
       })),
+      ...['requests', 'requestCreate', 'requestDetail'].map((name) => ({
+        name,
+        authorizedAs: 'requests',
+      })),
+      { name: 'inbox', authorizedAs: null },
       { name: 'settingsUsers', authorizedAs: 'user:*' },
       { name: 'settingsUserCreate', authorizedAs: 'user:*' },
       { name: 'settingsUser', authorizedAs: 'user:*' },
@@ -82,6 +86,16 @@ describe('app client routes', () => {
         name,
         authorizedAs: 'settings:authorization.default-access',
       })),
+      ...[
+        'workflows',
+        'workflowDefinitions',
+        'workflowDefinition',
+        'workflowExecutions',
+        'workflowExecution',
+      ].map((name) => ({
+        name,
+        authorizedAs: 'settings:workflow-management',
+      })),
     ]);
     for (const loader of componentLoadersIn(resolved.routes))
       await expect(loader()).resolves.toMatchObject({
@@ -101,11 +115,10 @@ describe('app client routes', () => {
     expect(paths.filter((path) => path === '/settings/users')).toHaveLength(1);
   });
 
-  it('keeps the inbox out of the application navigation', () => {
-    // The inbox is reached from the header's inbox button, so it deliberately declares no menu entry.
+  it('puts the inbox in the sidebar, where request notifications are read', () => {
     expect(
       applicationRoutes[0].routes.find((route) => route.name === 'inbox'),
-    ).not.toHaveProperty('navigation');
+    ).toHaveProperty('navigation.title', 'inboxButton.title');
   });
 });
 

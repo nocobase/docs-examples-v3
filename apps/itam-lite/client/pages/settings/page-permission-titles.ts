@@ -7,4 +7,10 @@ import type { PagePermissionTitles } from './page-permissions.js';
 export const pagePermissionTitles: PagePermissionTitles = {
   deviceCreate: 'devices.new',
   deviceEdit: 'devices.edit',
+  requestCreate: 'requests.new',
+  requestDetail: 'requests.title',
+  workflowDefinitions: 'workflows.definitions',
+  workflowDefinition: 'workflows.definitions',
+  workflowExecutions: 'workflows.executions',
+  workflowExecution: 'workflows.executions',
 };

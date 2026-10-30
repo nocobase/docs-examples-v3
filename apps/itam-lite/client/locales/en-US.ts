@@ -1,3 +1,4 @@
+import { requestsEn, rolesEn, workflowsEn } from './requests.js';
 import { devicesEn } from './devices.js';
 import fileUi from '../extensions/nocobase-file-component-ui/locales/en-US.js';
 import type { LocaleResource } from '@nocobase/i18n';
@@ -10,6 +11,9 @@ const enUS = {
   ...systemEnUS,
   ...fileUi,
   devices: devicesEn,
+  requests: requestsEn,
+  roles: rolesEn,
+  workflows: workflowsEn,
   // The application's copy goes here, one group per feature. A shared group such as `navigation` is extended by
   // spreading the system one first, `navigation: { ...systemEnUS.navigation, orders: 'Orders' }`, since a group
   // written here replaces the system group of the same name rather than merging with it.

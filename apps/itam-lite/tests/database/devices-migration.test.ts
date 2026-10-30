@@ -58,7 +58,10 @@ describeMigration('202610300102_add_device_serial_number_unique', {
   sources,
   up: async ({ connection }) => {
     // `up` runs twice (apply, roll back, apply again); start each run from an empty table.
-    await connection.query.deleteFrom('devices').where('id', 'in', ['a', 'b', 'c']).execute();
+    await connection.query
+      .deleteFrom('devices')
+      .where('id', 'in', ['a', 'b', 'c'])
+      .execute();
     await connection.query
       .insertInto('devices')
       .values(device('a', 'IT-1', 'SN-1'))

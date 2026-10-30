@@ -17,15 +17,18 @@ pnpm nocobase config check
 pnpm dev
 ```
 
+The notifications use the `inbox` channel that `config.example.yml` already declares (`notification.channels.inbox`, type `in-app`); keep that name.
+
 Open the full `Local:` URL printed by `pnpm dev`, including `/main/`, and sign in with the initial administrator from `config.yml` (`users.initialAdmin`, by default `nocobase` / `admin123`). Generated configuration, secrets and the SQLite database are not distributed. The tutorial ran the app on port 13100 by putting `APP_SERVER_PORT=13100` in the ignored `.env.local`.
 
 ## Chapters
 
-| Chapter                                                                                               | Checkpoint                                 | What it adds                                                                                       |
-| ----------------------------------------------------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| [4 Create the app](https://docs.nocobase.com/zh-CN/guides/create-app/)                                | `feat(itam-lite): create the application`  | The default template, configured for SQLite                                                        |
-| [5 Write a design doc](https://docs.nocobase.com/zh-CN/guides/write-a-design-doc/)                    | `docs(itam-lite): add the system design`   | [`docs/design.md`](docs/design.md) (Chinese), indexed from `AGENTS.md`                             |
-| [6 First feature: the device register](https://docs.nocobase.com/zh-CN/guides/first-feature-devices/) | `feat(itam-lite): add the device register` | Devices table, API and page; a second round adds unique serial numbers and status/category filters |
+| Chapter                                                                                               | Checkpoint                                           | What it adds                                                                                       |
+| ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [4 Create the app](https://docs.nocobase.com/zh-CN/guides/create-app/)                                | `feat(itam-lite): create the application`            | The default template, configured for SQLite                                                        |
+| [5 Write a design doc](https://docs.nocobase.com/zh-CN/guides/write-a-design-doc/)                    | `docs(itam-lite): add the system design`             | [`docs/design.md`](docs/design.md) (Chinese), indexed from `AGENTS.md`                             |
+| [6 First feature: the device register](https://docs.nocobase.com/zh-CN/guides/first-feature-devices/) | `feat(itam-lite): add the device register`           | Devices table, API and page; a second round adds unique serial numbers and status/category filters |
+| [7 Requests and approval](https://docs.nocobase.com/zh-CN/guides/requests-and-approval/)              | `feat(itam-lite): add device requests with approval` | Request workflow on `@nocobase/lifecycle`, in-app notifications, three roles, Workflow management  |
 
 ## Source map
 
@@ -44,16 +47,28 @@ Open the full `Local:` URL printed by `pnpm dev`, including `/main/`, and sign i
 ```bash
 pnpm typecheck
 pnpm lint
-pnpm exec vitest run tests/server/devices.test.ts tests/database/devices-migration.test.ts tests/client/client-routes.test.ts
+pnpm test
 ```
+
+## Walk through the request workflow
+
+Create three users under **System settings → Users** and give each one role in **Permission sets**: an employee (**Employee**), an IT support person (**IT support**) and an asset manager (**Asset manager**). In separate browser sessions:
+
+1. As the employee, open **Device requests → New request**, choose **Laptop** and submit. It is **Pending approval**. A **Monitor** request goes straight to **Ready to issue**.
+2. As the asset manager, open **Inbox**, follow the message and **Approve**.
+3. As IT support, open **Inbox**, follow the message, **Issue** and choose an in-stock laptop. In **Devices**, that laptop is **In use** by the employee.
+4. As the administrator, open **System settings → Workflow management**: the definition shows the diagram and the approval rules; **Executions** shows each request's history and its notifications.
+
+Notification texts use the deployment's default language (`i18n.defaultLocale`), not each recipient's.
 
 Checks that ran for each checkpoint are listed under [Verification log](#verification-log).
 
 ## Verification log
 
-| Checkpoint        | Ran                                                                                                                                                                                                                                       | Browser check                                                                                                                                                                                      | Not verified                                                                                    |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| 6 Device register | `pnpm typecheck`, `pnpm lint`, the three test files above (10 tests), `tests/client/page-permission-titles.test.ts`, `tests/server/authorization-assignment-safety.test.ts`, `tests/client/app-locale-coverage.test.ts`, `tests/project/` | As the administrator on SQLite: registered a device, saw the duplicate asset tag and serial number messages beside their fields, filtered by status, searched by serial number, edited and deleted | No client component test or Playwright test for the device page; PostgreSQL and MySQL not tried |
+| Checkpoint              | Ran                                                                                                                                                                                                                                       | Browser check                                                                                                                                                                                                                                                                                                                                                                                                                            | Not verified                                                                                                 |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| 7 Requests and approval | `pnpm typecheck`, `pnpm lint`, `pnpm test` (82 files, 465 tests)                                                                                                                                                                          | On SQLite with three users holding one role each: laptop request routed to approval, monitor request straight to issue; asset manager approved from the inbox; IT support issued an in-stock laptop and the register showed it in use by the requester; failed notifications (wrong channel name in the first version) retried and delivered after the fix; approval rules saved, a desktop request then needed approval, rules restored | Rejection and withdrawal only through the API tests; no Playwright test; per-recipient notification language |
+| 6 Device register       | `pnpm typecheck`, `pnpm lint`, the three test files above (10 tests), `tests/client/page-permission-titles.test.ts`, `tests/server/authorization-assignment-safety.test.ts`, `tests/client/app-locale-coverage.test.ts`, `tests/project/` | As the administrator on SQLite: registered a device, saw the duplicate asset tag and serial number messages beside their fields, filtered by status, searched by serial number, edited and deleted                                                                                                                                                                                                                                       | No client component test or Playwright test for the device page; PostgreSQL and MySQL not tried              |
 
 ---
 

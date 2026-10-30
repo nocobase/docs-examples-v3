@@ -1,4 +1,4 @@
-import { Home, Laptop } from 'lucide-react';
+import { ClipboardList, Home, Inbox, Laptop } from 'lucide-react';
 import systemSettingsRoutes from './pages/settings/routes.js';
 import {
   defineAppRoutes,
@@ -27,6 +27,26 @@ const appRoutes: AppClientRouteContribution = defineAppRoutes([
     ],
   },
   {
+    name: 'requests',
+    path: '/requests',
+    auth: 'required',
+    authz: { resource: { type: 'page', id: 'requests' }, action: 'access' },
+    navigation: { title: 'requests.title', icon: ClipboardList, order: 20 },
+    componentLoader: () => import('./pages/requests/index.js'),
+    children: [
+      {
+        name: 'requestCreate',
+        path: 'new',
+        componentLoader: () => import('./pages/requests/new.js'),
+      },
+      {
+        name: 'requestDetail',
+        path: ':requestId',
+        componentLoader: () => import('./pages/requests/detail.js'),
+      },
+    ],
+  },
+  {
     // Every signed-in user reaches the landing page. `authz: 'skip'` takes it out of page authorization entirely, so
     // no permission change can leave a user signed in with nowhere to land.
     authz: 'skip',
@@ -37,13 +57,13 @@ const appRoutes: AppClientRouteContribution = defineAppRoutes([
     path: '/',
   },
   {
-    // Declares no navigation, so the application decides where its entry goes (for example a sidebar item with an
-    // unread badge). The plugin's API answers each person's own messages only, so the page needs no authorization of
-    // its own.
+    // The plugin's API answers each person's own messages only, so the page needs no authorization of its own.
     authz: 'skip',
     auth: 'required',
     componentLoader: () => import('./pages/inbox.js'),
     name: 'inbox',
+    // ITAM Lite sends approval and issue messages to the inbox, so it gets a sidebar entry after the business pages.
+    navigation: { title: 'inboxButton.title', icon: Inbox, order: 30 },
     path: '/inbox',
   },
   {

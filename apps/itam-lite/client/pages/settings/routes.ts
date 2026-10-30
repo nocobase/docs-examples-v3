@@ -4,6 +4,7 @@ import {
   ShieldCheck,
   KeyRound,
   ListFilter,
+  Workflow,
 } from 'lucide-react';
 import {
   defineAppRoutes,
@@ -127,6 +128,46 @@ const systemSettingsRoutes: AppClientRouteContribution = defineAppRoutes([
                 path: ':key/edit',
                 breadcrumb: { title: 'settings.defaultAccess.edit' },
                 componentLoader: () => import('./default-access-form.js'),
+              },
+            ],
+          },
+        ],
+      },
+      {
+        // System settings → Workflow management (ITAM Lite): the definitions and executions of the application's
+        // lifecycles, from the template's workflow-management block. The tabs are child routes without navigation.
+        name: 'workflows',
+        path: '/workflows',
+        auth: 'required',
+        authz: {
+          resource: { type: 'settings', id: 'workflow-management' },
+          action: 'read',
+        },
+        navigation: { title: 'workflows.title', icon: Workflow },
+        breadcrumb: { title: 'workflows.title' },
+        componentLoader: () => import('../workflows/index.js'),
+        children: [
+          {
+            name: 'workflowDefinitions',
+            path: 'definitions',
+            componentLoader: () => import('../workflows/definitions.js'),
+            children: [
+              {
+                name: 'workflowDefinition',
+                path: ':workflowId',
+                componentLoader: () => import('../workflows/definition.js'),
+              },
+            ],
+          },
+          {
+            name: 'workflowExecutions',
+            path: 'executions',
+            componentLoader: () => import('../workflows/executions.js'),
+            children: [
+              {
+                name: 'workflowExecution',
+                path: ':workflowId/:recordId',
+                componentLoader: () => import('../workflows/execution.js'),
               },
             ],
           },
