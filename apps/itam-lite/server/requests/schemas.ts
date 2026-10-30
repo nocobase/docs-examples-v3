@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { deviceCategory } from '../devices/schemas.js';
+import { deviceCategory, isoDate } from '../devices/schemas.js';
 
 export const requestStates = [
   'draft',
@@ -14,6 +14,8 @@ export const requestState = z.enum(requestStates);
 export const createRequest = z.strictObject({
   category: deviceCategory,
   reason: z.string().trim().min(1).max(500),
+  /** Not before the day it is submitted; checked by the service, which knows today's date. */
+  neededBy: isoDate.nullable().default(null),
 });
 
 export const requestId = z.object({ id: z.uuid() });
@@ -64,6 +66,7 @@ export const rowSchema = z.object({
   requesterId: z.string(),
   category: deviceCategory,
   reason: z.string(),
+  neededBy: z.string().nullable(),
   status: requestState,
   needsApproval: z.coerce.boolean(),
   decisionComment: z.string(),

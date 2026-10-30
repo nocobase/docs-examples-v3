@@ -16,7 +16,8 @@ export const deviceStatuses = [
 export const deviceCategory = z.enum(deviceCategories);
 export const deviceStatus = z.enum(deviceStatuses);
 
-const isoDate = z
+/** A calendar date, `YYYY-MM-DD`, with no time or time zone. */
+export const isoDate = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/)
   .refine((value) => {

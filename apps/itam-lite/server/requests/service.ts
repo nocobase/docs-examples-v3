@@ -31,6 +31,18 @@ const text = (value: unknown): string =>
       ? String(value)
       : '';
 
+/** Business dates are calendar days in the company's time zone (docs/design.md §1: the company is in Shanghai). */
+export const BUSINESS_TIME_ZONE = 'Asia/Shanghai';
+
+/** Today as `YYYY-MM-DD` in the business time zone, not the server's. */
+export const businessToday = (now = new Date()) =>
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: BUSINESS_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now);
+
 export const requestError = (
   status:
     | 'NOT_FOUND'
@@ -173,11 +185,21 @@ export class DeviceRequestService {
    * administrator-set rules and the number of devices the requester already uses, counted here inside the transaction.
    */
   async submit(
-    input: { category: DeviceCategory; reason: string },
+    input: {
+      category: DeviceCategory;
+      reason: string;
+      neededBy: string | null;
+    },
     userId: string,
     requestId: string,
   ) {
     const actor = { id: userId };
+    if (input.neededBy && input.neededBy < businessToday())
+      throw requestError(
+        'INVALID_ARGUMENT',
+        'REQUEST_NEEDED_BY_PAST',
+        'neededBy',
+      );
     return this.runtime.transaction(async (tx) => {
       const connection = tx.handle as DatabaseConnection;
       const count = await connection.repository('deviceRequests').count({});
@@ -191,6 +213,7 @@ export class DeviceRequestService {
           requesterId: userId,
           category: input.category,
           reason: input.reason,
+          neededBy: input.neededBy,
           needsApproval: false,
           decisionComment: '',
           createdAt: now,

@@ -19,6 +19,7 @@ const fields = [
   'requesterId',
   'category',
   'reason',
+  'neededBy',
   'status',
   'needsApproval',
   'decisionComment',

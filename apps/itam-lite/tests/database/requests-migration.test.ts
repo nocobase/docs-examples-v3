@@ -39,3 +39,15 @@ describeMigration('202610300201_create_device_requests', {
     await expectCollection('lifecycleTransitions').not.toExist();
   },
 });
+
+describeMigration('202610300401_add_device_request_needed_by', {
+  sources,
+  up: async ({ expectCollection }) => {
+    await expectCollection('deviceRequests').toHaveField('neededBy', {
+      nullable: true,
+    });
+  },
+  down: async ({ expectCollection }) => {
+    await expectCollection('deviceRequests').not.toHaveField('neededBy');
+  },
+});

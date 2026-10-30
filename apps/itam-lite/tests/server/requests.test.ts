@@ -235,3 +235,38 @@ test('lets administrators adjust the approval rules, refusing stale saves and ot
   const listed = (await executions.json()) as { data: { recordId: string }[] };
   expect(listed.data.map((row) => row.recordId)).toContain(first.id);
 });
+
+test('keeps the needed-by date and refuses one before today', async ({
+  testApp,
+}) => {
+  const admin = await signIn(testApp, DEFAULT_ADMIN_CREDENTIALS);
+  const alice = await person(testApp, admin, 'alice', 'employee');
+  const ben = await person(testApp, admin, 'ben', 'it-support');
+  const post = (neededBy: unknown) =>
+    alice.fetch(
+      '/requests',
+      json(
+        'POST',
+        { category: 'monitor', reason: 'Second screen', neededBy },
+        { 'Idempotency-Key': randomUUID() },
+      ),
+    );
+
+  const created = await post('2099-12-31');
+  expect(created.status).toBe(201);
+  const { data } = (await created.json()) as { data: DeviceRequest };
+  expect(data.neededBy).toBe('2099-12-31');
+  // IT support reads the date it plans the issue by.
+  const seen = await ben.fetch(`/requests/${data.id}`);
+  expect(
+    ((await seen.json()) as { data: { request: DeviceRequest } }).data.request
+      .neededBy,
+  ).toBe('2099-12-31');
+
+  const past = await post('2020-01-01');
+  expect(past.status).toBe(400);
+  expect(await past.json()).toMatchObject({
+    error: { reason: 'REQUEST_NEEDED_BY_PAST' },
+  });
+  expect((await post('2099-02-30')).status).toBe(400);
+});

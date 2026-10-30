@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router';
-import { createUuid, useApiClient, useToaster } from '@nocobase/app-client';
+import {
+  ApiClientError,
+  createUuid,
+  useApiClient,
+  useToaster,
+} from '@nocobase/app-client';
 import { useTranslation } from '@nocobase/i18n/client';
 import { LoaderCircle } from 'lucide-react';
 import { RouteDialog } from '#components/route-dialog';
 import { Button } from '#components/ui/button';
+import { Input } from '#components/ui/input';
 import { Label } from '#components/ui/label';
 import { Textarea } from '#components/ui/textarea';
 import {
@@ -28,6 +34,8 @@ export default function NewRequest() {
   const [category, setCategory] = useState<DeviceCategory>('laptop');
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
+  const [neededBy, setNeededBy] = useState('');
+  const [neededByError, setNeededByError] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>();
   // One key per logical submission: a retry after an uncertain response is not a second request.
@@ -51,7 +59,7 @@ export default function NewRequest() {
       const { data } = await api.request<{ data: DeviceRequest }>({
         path: 'requests',
         method: 'POST',
-        json: { category, reason: text },
+        json: { category, reason: text, neededBy: neededBy || null },
         headers: { 'Idempotency-Key': key },
       });
       toaster.show({
@@ -61,6 +69,14 @@ export default function NewRequest() {
       reload();
       void navigate(`/requests/${data.id}${search}`, { replace: true });
     } catch (failure) {
+      if (
+        failure instanceof ApiClientError &&
+        failure.reason === 'REQUEST_NEEDED_BY_PAST'
+      ) {
+        setNeededByError(t('requests.errors.neededByPast'));
+        document.getElementById('request-neededBy')?.focus();
+        return;
+      }
       setError(failure);
     } finally {
       setBusy(false);
@@ -143,6 +159,33 @@ export default function NewRequest() {
               className='text-sm text-destructive'
             >
               {reasonError}
+            </p>
+          )}
+        </div>
+        <div className='flex flex-col gap-2'>
+          <Label htmlFor='request-neededBy'>{t('requests.neededBy')}</Label>
+          <Input
+            id='request-neededBy'
+            type='date'
+            className='w-48'
+            disabled={busy}
+            value={neededBy}
+            onChange={(event) => {
+              setNeededBy(event.target.value);
+              setNeededByError('');
+            }}
+            aria-invalid={!!neededByError}
+            aria-describedby={
+              neededByError ? 'request-neededBy-error' : undefined
+            }
+          />
+          {neededByError && (
+            <p
+              id='request-neededBy-error'
+              role='alert'
+              className='text-sm text-destructive'
+            >
+              {neededByError}
             </p>
           )}
         </div>

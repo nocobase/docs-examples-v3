@@ -29,7 +29,7 @@ import {
 } from '#components/ui/empty';
 import { Skeleton } from '#components/ui/skeleton';
 import { DeviceError } from '../devices/shared.js';
-import { formatDate } from './format.js';
+import { formatDate, formatDay } from './format.js';
 import { RequestStateBadge } from './shared.js';
 import {
   requestStates,
@@ -145,6 +145,15 @@ export default function RequestsPage() {
         row.original.deviceAssetTag ?? (
           <span className='text-muted-foreground'>—</span>
         ),
+    },
+    {
+      accessorKey: 'neededBy',
+      header: t('requests.neededBy'),
+      cell: ({ row }) => (
+        <span className='whitespace-nowrap'>
+          {formatDay(row.original.neededBy, locale)}
+        </span>
+      ),
     },
     {
       accessorKey: 'createdAt',

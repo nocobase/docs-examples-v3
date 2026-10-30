@@ -17,6 +17,8 @@ export interface DeviceRequest {
   requesterName: string | null;
   category: DeviceCategory;
   reason: string;
+  /** `YYYY-MM-DD`; empty on requests submitted before the field existed. */
+  neededBy: string | null;
   status: RequestState;
   needsApproval: boolean;
   decisionComment: string;

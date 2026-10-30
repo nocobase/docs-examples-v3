@@ -31,7 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '#components/ui/dialog';
-import { formatDate } from './format.js';
+import { formatDate, formatDay } from './format.js';
 import { RequestStateBadge } from './shared.js';
 import type { RequestsOutletContext } from './index.js';
 import type { LifecycleDescription, RequestDetail } from './types.js';
@@ -220,6 +220,9 @@ export default function RequestDetailPage() {
               {t(`devices.categories.${request.category}`)}
             </Field>
             <Field label={t('requests.reason')}>{request.reason}</Field>
+            <Field label={t('requests.neededBy')}>
+              {formatDay(request.neededBy, locale)}
+            </Field>
             <Field label={t('requests.needsApproval')}>
               {t(
                 request.needsApproval

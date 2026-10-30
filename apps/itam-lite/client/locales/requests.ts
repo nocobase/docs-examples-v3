@@ -11,6 +11,7 @@ export const requestsEn = {
   reasonPlaceholder: 'What will you use it for?',
   status: 'Status',
   createdAt: 'Submitted',
+  neededBy: 'Needed by',
   device: 'Issued device',
   decisionComment: 'Decision comment',
   decidedBy: 'Decided by',
@@ -58,6 +59,7 @@ export const requestsEn = {
   errors: {
     reasonRequired: 'Tell IT what the device is for.',
     reasonLong: 'Use at most 500 characters.',
+    neededByPast: 'Choose today or a later date.',
     commentRequired: 'Give a reason for rejecting.',
     deviceRequired: 'Choose a device.',
     deviceUnavailable: 'That device is no longer in stock. Choose another.',
@@ -89,6 +91,7 @@ export const requestsZh: typeof requestsEn = {
   reasonPlaceholder: '这台设备用来做什么？',
   status: '状态',
   createdAt: '提交时间',
+  neededBy: '期望到货日期',
   device: '发放的设备',
   decisionComment: '审批意见',
   decidedBy: '审批人',
@@ -136,6 +139,7 @@ export const requestsZh: typeof requestsEn = {
   errors: {
     reasonRequired: '请写明设备的用途。',
     reasonLong: '最多 500 个字符。',
+    neededByPast: '不能早于今天。',
     commentRequired: '请写明驳回原因。',
     deviceRequired: '请选择设备。',
     deviceUnavailable: '这台设备已经不在库，请换一台。',
