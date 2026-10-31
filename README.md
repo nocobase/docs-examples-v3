@@ -29,3 +29,5 @@ See [application conventions](apps/README.md).
 - [Team tasks](apps/team-tasks/README.MD): build your first app with an agent; tasks, assignees, progress and role-based access.
 
 - [Agents guide](apps/agents-guide/README.md): model conversations, business Skills, and Runner setup.
+
+- [Pages, routes and navigation](apps/pages-routes-navigation/README.MD): page registration, overlays, report tabs, access control and plugin component overrides, with reproducible documentation screenshots.
