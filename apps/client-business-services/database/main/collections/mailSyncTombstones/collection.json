@@ -1,0 +1,120 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "runId",
+          "providerMessageId"
+        ],
+        "type": "primary"
+      },
+      {
+        "fields": [
+          "runId"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailSyncRuns",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "runId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(500)",
+          "physicalDataType": "string"
+        },
+        "length": 500,
+        "name": "providerMessageId",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "foreignKey": "runId",
+        "name": "run",
+        "target": "mailSyncRuns",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "runId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "runId"
+        ],
+        "name": "idx_mail_sync_tombstones_run_id",
+        "order": {
+          "runId": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "mailSyncTombstones",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "mailSyncTombstones",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}

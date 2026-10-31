@@ -1,0 +1,8 @@
+node_modules/
+dist/
+storage/
+config.yml
+.agents/skills/
+.claude/skills/
+playwright-report/
+test-results/

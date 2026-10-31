@@ -1,6 +1,6 @@
 # Order services example
 
-This is an intentionally headless application for the Server business services documentation. Keep business code under `server/orders/`, registration under `server/providers/`, HTTP adapters under `server/routes/`, and commands under `cli/commands/`. Do not add browser pages, workflow administration or a full application template unless requested.
+This is an intentionally headless application for the Server-side services documentation. Keep business code under `server/orders/`, registration under `server/providers/`, HTTP adapters under `server/routes/`, and commands under `cli/commands/`. Do not add browser pages, workflow administration or a full application template unless requested.
 
 Use the installed NocoBase public APIs. The framework owns authentication, authorization, database transactions, job reconstruction and CLI cleanup. Do not replace those mechanisms with mocks in the runnable application. Read `README.md` for the supported versions and verification map. Test changes with `pnpm typecheck`, `pnpm test`, `pnpm build` and `pnpm format:check`; verify changed entry points through their documented commands. Never commit configuration, secrets, credentials, runtime data, node_modules or dist.
 

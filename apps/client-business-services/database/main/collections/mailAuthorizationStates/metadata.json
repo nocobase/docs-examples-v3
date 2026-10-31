@@ -1,0 +1,43 @@
+{
+  "document": {
+    "fields": {
+      "consumedAt": {
+        "type": "datetimeTz"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "expiresAt": {
+        "type": "datetimeTz"
+      },
+      "initialSyncReceivedAfter": {
+        "type": "datetimeTz"
+      },
+      "providerName": {
+        "type": "string"
+      },
+      "providerType": {
+        "type": "string"
+      },
+      "redirectUri": {
+        "type": "string"
+      },
+      "scopes": {
+        "type": "json"
+      },
+      "stateHash": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "verifierCredentialReference": {
+        "type": "string"
+      }
+    },
+    "name": "mailAuthorizationStates",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailAuthorizationStates"
+}

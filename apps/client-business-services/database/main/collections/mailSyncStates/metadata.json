@@ -1,0 +1,27 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "cursor": {
+        "type": "json"
+      },
+      "lastSyncedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailSyncStates",
+    "relations": {
+      "account": {
+        "foreignKey": "accountId",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailSyncStates"
+}

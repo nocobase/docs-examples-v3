@@ -1,0 +1,48 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "defaultForAccountId": {
+        "type": "uuid"
+      },
+      "defaultForIdentityId": {
+        "type": "uuid"
+      },
+      "html": {
+        "type": "text"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "identityId": {
+        "type": "uuid"
+      },
+      "name": {
+        "type": "string"
+      },
+      "text": {
+        "type": "text"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailSignatures",
+    "relations": {
+      "identity": {
+        "foreignKey": "identityId",
+        "target": "mailIdentities",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailSignatures"
+}

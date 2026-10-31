@@ -1,0 +1,37 @@
+{
+  "document": {
+    "fields": {
+      "contentType": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "disk": {
+        "type": "string"
+      },
+      "expiresAt": {
+        "type": "datetimeTz"
+      },
+      "fileName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "key": {
+        "type": "string"
+      },
+      "size": {
+        "type": "integer"
+      },
+      "userId": {
+        "type": "string"
+      }
+    },
+    "name": "mailOutboundAttachments",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailOutboundAttachments"
+}

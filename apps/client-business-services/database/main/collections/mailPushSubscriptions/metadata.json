@@ -1,0 +1,48 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "configurationFingerprint": {
+        "type": "string"
+      },
+      "expiresAt": {
+        "type": "datetimeTz"
+      },
+      "leaseExpiresAt": {
+        "type": "datetimeTz"
+      },
+      "leaseToken": {
+        "type": "string"
+      },
+      "providerName": {
+        "type": "string"
+      },
+      "providerSubscriptionId": {
+        "type": "string"
+      },
+      "providerType": {
+        "type": "string"
+      },
+      "renewAfter": {
+        "type": "datetimeTz"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailPushSubscriptions",
+    "relations": {
+      "account": {
+        "foreignKey": "accountId",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailPushSubscriptions"
+}

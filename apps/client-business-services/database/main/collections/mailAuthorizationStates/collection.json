@@ -1,0 +1,207 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "stateHash"
+        ],
+        "type": "primary"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(64)",
+          "physicalDataType": "string"
+        },
+        "length": 64,
+        "name": "stateHash",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(255)",
+          "physicalDataType": "string"
+        },
+        "length": 255,
+        "name": "userId",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(100)",
+          "physicalDataType": "string"
+        },
+        "length": 100,
+        "name": "providerType",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(255)",
+          "physicalDataType": "string"
+        },
+        "length": 255,
+        "name": "providerName",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(2000)",
+          "physicalDataType": "string"
+        },
+        "length": 2000,
+        "name": "redirectUri",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(100)",
+          "physicalDataType": "string"
+        },
+        "length": 100,
+        "name": "verifierCredentialReference",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "nativeType": "json",
+          "physicalDataType": "json"
+        },
+        "name": "scopes",
+        "nullable": false,
+        "type": "json"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "expiresAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "consumedAt",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "initialSyncReceivedAfter",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "createdAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "expiresAt",
+              "order": "asc"
+            },
+            {
+              "field": "consumedAt",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "expiresAt",
+          "consumedAt"
+        ],
+        "name": "mail_authorization_states_expiry_idx",
+        "order": {
+          "consumedAt": "asc",
+          "expiresAt": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "mailAuthorizationStates",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "mailAuthorizationStates",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}

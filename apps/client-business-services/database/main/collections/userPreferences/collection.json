@@ -1,0 +1,158 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "id"
+        ],
+        "type": "primary"
+      },
+      {
+        "fields": [
+          "userId",
+          "key"
+        ],
+        "mode": "index",
+        "name": "idx_user_preferences_user_id_key",
+        "type": "unique"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(64)",
+          "physicalDataType": "string"
+        },
+        "length": 64,
+        "name": "id",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(64)",
+          "physicalDataType": "string"
+        },
+        "length": 64,
+        "name": "userId",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(100)",
+          "physicalDataType": "string"
+        },
+        "length": 100,
+        "name": "key",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "value",
+        "nullable": false,
+        "type": "text"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "createdAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "updatedAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "userId",
+              "order": "asc"
+            },
+            {
+              "field": "key",
+              "order": "asc"
+            }
+          ],
+          "unique": true
+        },
+        "fields": [
+          "userId",
+          "key"
+        ],
+        "name": "idx_user_preferences_user_id_key",
+        "order": {
+          "key": "asc",
+          "userId": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "userPreferences",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "userPreferences",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}

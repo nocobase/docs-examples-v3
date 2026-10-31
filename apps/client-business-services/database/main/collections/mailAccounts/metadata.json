@@ -1,0 +1,52 @@
+{
+  "document": {
+    "fields": {
+      "address": {
+        "type": "string"
+      },
+      "authorizationSubject": {
+        "type": "string"
+      },
+      "automaticSyncIntervalMinutes": {
+        "type": "integer"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "credentialReference": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "initialSyncReceivedAfter": {
+        "type": "datetimeTz"
+      },
+      "providerName": {
+        "type": "string"
+      },
+      "providerType": {
+        "type": "string"
+      },
+      "scopes": {
+        "type": "json"
+      },
+      "status": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      },
+      "userId": {
+        "type": "string"
+      }
+    },
+    "name": "mailAccounts",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailAccounts"
+}

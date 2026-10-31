@@ -1,0 +1,25 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "closed": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "providerMessageId": {
+        "type": "string"
+      },
+      "revision": {
+        "type": "integer"
+      }
+    },
+    "name": "mailDraftStates",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailDraftStates"
+}

@@ -1,0 +1,251 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "accountId"
+        ],
+        "type": "primary"
+      },
+      {
+        "fields": [
+          "accountId"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailAccounts",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      },
+      {
+        "fields": [
+          "providerType",
+          "providerName",
+          "providerSubscriptionId"
+        ],
+        "mode": "index",
+        "name": "mail_push_subscriptions_provider_unique",
+        "type": "unique"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "accountId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(100)",
+          "physicalDataType": "string"
+        },
+        "length": 100,
+        "name": "providerType",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(255)",
+          "physicalDataType": "string"
+        },
+        "length": 255,
+        "name": "providerName",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(412)",
+          "physicalDataType": "string"
+        },
+        "length": 412,
+        "name": "providerSubscriptionId",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(64)",
+          "physicalDataType": "string"
+        },
+        "length": 64,
+        "name": "configurationFingerprint",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "renewAfter",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "expiresAt",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(100)",
+          "physicalDataType": "string"
+        },
+        "length": 100,
+        "name": "leaseToken",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "leaseExpiresAt",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "updatedAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "foreignKey": "accountId",
+        "name": "account",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "renewAfter",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "renewAfter"
+        ],
+        "name": "mail_push_subscriptions_renew_idx",
+        "order": {
+          "renewAfter": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "providerType",
+              "order": "asc"
+            },
+            {
+              "field": "providerName",
+              "order": "asc"
+            },
+            {
+              "field": "providerSubscriptionId",
+              "order": "asc"
+            }
+          ],
+          "unique": true
+        },
+        "fields": [
+          "providerType",
+          "providerName",
+          "providerSubscriptionId"
+        ],
+        "name": "mail_push_subscriptions_provider_unique",
+        "order": {
+          "providerName": "asc",
+          "providerSubscriptionId": "asc",
+          "providerType": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "mailPushSubscriptions",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "mailPushSubscriptions",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}

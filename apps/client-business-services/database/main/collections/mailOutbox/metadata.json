@@ -1,0 +1,46 @@
+{
+  "document": {
+    "fields": {
+      "aggregateId": {
+        "type": "uuid"
+      },
+      "attempts": {
+        "type": "integer"
+      },
+      "availableAt": {
+        "type": "datetimeTz"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "deduplicationKey": {
+        "type": "string"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "leaseExpiresAt": {
+        "type": "datetimeTz"
+      },
+      "leaseToken": {
+        "type": "string"
+      },
+      "payload": {
+        "type": "json"
+      },
+      "publishedAt": {
+        "type": "datetimeTz"
+      },
+      "status": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      }
+    },
+    "name": "mailOutbox",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailOutbox"
+}

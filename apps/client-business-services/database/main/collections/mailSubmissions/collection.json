@@ -1,0 +1,338 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "id"
+        ],
+        "type": "primary"
+      },
+      {
+        "fields": [
+          "accountId"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailAccounts",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      },
+      {
+        "fields": [
+          "accountId",
+          "idempotencyKey"
+        ],
+        "mode": "index",
+        "name": "mail_submissions_idempotency_unique",
+        "type": "unique"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "id",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "accountId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(255)",
+          "physicalDataType": "string"
+        },
+        "length": 255,
+        "name": "idempotencyKey",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(64)",
+          "physicalDataType": "string"
+        },
+        "length": 64,
+        "name": "requestFingerprint",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(20)",
+          "physicalDataType": "string"
+        },
+        "length": 20,
+        "name": "status",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(500)",
+          "physicalDataType": "string"
+        },
+        "length": 500,
+        "name": "providerMessageId",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "scheduledAt",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(255)",
+          "physicalDataType": "string"
+        },
+        "length": 255,
+        "name": "requestedBy",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "nativeType": "json",
+          "physicalDataType": "json"
+        },
+        "name": "composeInput",
+        "nullable": true,
+        "type": "json"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "nativeType": "json",
+          "physicalDataType": "json"
+        },
+        "name": "error",
+        "nullable": true,
+        "type": "json"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(100)",
+          "physicalDataType": "string"
+        },
+        "length": 100,
+        "name": "leaseToken",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "leaseExpiresAt",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "createdAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "updatedAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "foreignKey": "accountId",
+        "name": "account",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "accountId"
+        ],
+        "name": "idx_mail_submissions_account_id",
+        "order": {
+          "accountId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "status",
+              "order": "asc"
+            },
+            {
+              "field": "leaseExpiresAt",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "status",
+          "leaseExpiresAt"
+        ],
+        "name": "mail_submissions_expired_idx",
+        "order": {
+          "leaseExpiresAt": "asc",
+          "status": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            },
+            {
+              "field": "createdAt",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "accountId",
+          "createdAt"
+        ],
+        "name": "mail_submissions_account_created_idx",
+        "order": {
+          "accountId": "asc",
+          "createdAt": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            },
+            {
+              "field": "idempotencyKey",
+              "order": "asc"
+            }
+          ],
+          "unique": true
+        },
+        "fields": [
+          "accountId",
+          "idempotencyKey"
+        ],
+        "name": "mail_submissions_idempotency_unique",
+        "order": {
+          "accountId": "asc",
+          "idempotencyKey": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "mailSubmissions",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "mailSubmissions",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}

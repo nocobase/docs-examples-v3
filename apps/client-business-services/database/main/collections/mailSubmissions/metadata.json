@@ -1,0 +1,60 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "composeInput": {
+        "type": "json"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "error": {
+        "type": "json"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "idempotencyKey": {
+        "type": "string"
+      },
+      "leaseExpiresAt": {
+        "type": "datetimeTz"
+      },
+      "leaseToken": {
+        "type": "string"
+      },
+      "providerMessageId": {
+        "type": "string"
+      },
+      "requestFingerprint": {
+        "type": "string"
+      },
+      "requestedBy": {
+        "type": "string"
+      },
+      "scheduledAt": {
+        "type": "datetimeTz"
+      },
+      "status": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailSubmissions",
+    "relations": {
+      "account": {
+        "foreignKey": "accountId",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailSubmissions"
+}

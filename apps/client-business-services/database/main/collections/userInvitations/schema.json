@@ -1,0 +1,234 @@
+{
+  "formatVersion": 1,
+  "name": "userInvitations",
+  "physical": {
+    "checkConstraints": [],
+    "columns": [
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "id",
+        "dataType": "string",
+        "length": 64,
+        "nativeType": "varchar(64)",
+        "nullable": false,
+        "ordinalPosition": 1
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "email",
+        "dataType": "string",
+        "length": 255,
+        "nativeType": "varchar(255)",
+        "nullable": false,
+        "ordinalPosition": 2
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "token_hash",
+        "dataType": "string",
+        "length": 64,
+        "nativeType": "varchar(64)",
+        "nullable": false,
+        "ordinalPosition": 3
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "role_scopes",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": false,
+        "ordinalPosition": 4
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "data",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": false,
+        "ordinalPosition": 5
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "summary",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": false,
+        "ordinalPosition": 6
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "status",
+        "dataType": "string",
+        "default": {
+          "expression": "'pending'",
+          "value": "pending"
+        },
+        "length": 255,
+        "nativeType": "varchar(255)",
+        "nullable": false,
+        "ordinalPosition": 7
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "invited_by_id",
+        "dataType": "string",
+        "length": 64,
+        "nativeType": "varchar(64)",
+        "nullable": false,
+        "ordinalPosition": 8
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "expires_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": false,
+        "ordinalPosition": 9
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "sent_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 10
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "send_error",
+        "dataType": "string",
+        "length": 1000,
+        "nativeType": "varchar(1000)",
+        "nullable": true,
+        "ordinalPosition": 11
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "accepted_user_id",
+        "dataType": "string",
+        "length": 64,
+        "nativeType": "varchar(64)",
+        "nullable": true,
+        "ordinalPosition": 12
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "accepted_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 13
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "created_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": false,
+        "ordinalPosition": 14
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "updated_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": false,
+        "ordinalPosition": 15
+      }
+    ],
+    "foreignKeys": [],
+    "indexes": [
+      {
+        "keys": [
+          {
+            "columnName": "invited_by_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_user_invitations_invited_by_id",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "email",
+            "order": "asc"
+          },
+          {
+            "columnName": "status",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_user_invitations_email_status",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "token_hash",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_user_invitations_token_hash",
+        "unique": true
+      },
+      {
+        "backsConstraint": {
+          "kind": "primaryKey"
+        },
+        "keys": [
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "sqlite_autoindex_user_invitations_1",
+        "unique": true
+      }
+    ],
+    "inspection": {
+      "aspects": {
+        "checkConstraints": "partial",
+        "columns": "complete",
+        "comments": "unsupported",
+        "foreignKeys": "complete",
+        "indexes": "complete",
+        "primaryKey": "complete",
+        "uniqueConstraints": "complete",
+        "viewDefinition": "complete"
+      },
+      "warnings": [
+        {
+          "aspect": "checkConstraints",
+          "code": "SQLITE_CHECK_CONSTRAINT_PARTIAL",
+          "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete."
+        }
+      ]
+    },
+    "kind": "table",
+    "primaryKey": {
+      "columns": [
+        "id"
+      ]
+    },
+    "schema": "main",
+    "strict": false,
+    "tableName": "user_invitations",
+    "uniqueConstraints": []
+  }
+}

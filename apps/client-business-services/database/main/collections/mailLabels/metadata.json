@@ -1,0 +1,28 @@
+{
+  "document": {
+    "fields": {
+      "color": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "name": {
+        "type": "string"
+      },
+      "ownerId": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailLabels",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailLabels"
+}

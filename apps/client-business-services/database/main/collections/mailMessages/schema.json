@@ -1,0 +1,619 @@
+{
+  "formatVersion": 1,
+  "name": "mailMessages",
+  "physical": {
+    "checkConstraints": [],
+    "columns": [
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 1
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "account_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 2
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "provider_message_id",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": false,
+        "ordinalPosition": 3
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "provider_draft_id",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": true,
+        "ordinalPosition": 4
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "provider_draft_message_id",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": true,
+        "ordinalPosition": 5
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "internet_message_id",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 6
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "provider_conversation_id",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": true,
+        "ordinalPosition": 7
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "sender",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": true,
+        "ordinalPosition": 8
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "sender_search",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 9
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "recipients_search",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 10
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "recipients",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": false,
+        "ordinalPosition": 11
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "reply_to",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": false,
+        "ordinalPosition": 12
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "in_reply_to",
+        "dataType": "string",
+        "length": 1000,
+        "nativeType": "varchar(1000)",
+        "nullable": true,
+        "ordinalPosition": 13
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "references",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": false,
+        "ordinalPosition": 14
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "subject",
+        "dataType": "string",
+        "length": 2000,
+        "nativeType": "varchar(2000)",
+        "nullable": false,
+        "ordinalPosition": 15
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "preview",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 16
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "text",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 17
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "html",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 18
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "note",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 19
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "content_status",
+        "dataType": "string",
+        "default": {
+          "expression": "'complete'",
+          "value": "complete"
+        },
+        "length": 20,
+        "nativeType": "varchar(20)",
+        "nullable": false,
+        "ordinalPosition": 20
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "content_error",
+        "dataType": "string",
+        "length": 100,
+        "nativeType": "varchar(100)",
+        "nullable": true,
+        "ordinalPosition": 21
+      },
+      {
+        "affinity": "integer",
+        "autoIncrement": false,
+        "columnName": "size",
+        "dataType": "integer",
+        "nativeType": "INTEGER",
+        "nullable": true,
+        "ordinalPosition": 22
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "received_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 23
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "sent_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 24
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "sort_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": false,
+        "ordinalPosition": 25
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "read",
+        "dataType": "boolean",
+        "default": {
+          "expression": "'0'",
+          "value": "0"
+        },
+        "nativeType": "boolean",
+        "nullable": false,
+        "ordinalPosition": 26
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "starred",
+        "dataType": "boolean",
+        "default": {
+          "expression": "'0'",
+          "value": "0"
+        },
+        "nativeType": "boolean",
+        "nullable": false,
+        "ordinalPosition": 27
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "draft",
+        "dataType": "boolean",
+        "default": {
+          "expression": "'0'",
+          "value": "0"
+        },
+        "nativeType": "boolean",
+        "nullable": false,
+        "ordinalPosition": 28
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "todo",
+        "dataType": "boolean",
+        "default": {
+          "expression": "'0'",
+          "value": "0"
+        },
+        "nativeType": "boolean",
+        "nullable": false,
+        "ordinalPosition": 29
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "attachments",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": false,
+        "ordinalPosition": 30
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "draft_conflict",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": true,
+        "ordinalPosition": 31
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "draft_source",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 32
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "scheduled_submission_id",
+        "dataType": "string",
+        "length": 255,
+        "nativeType": "varchar(255)",
+        "nullable": true,
+        "ordinalPosition": 33
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "remote_draft_fingerprint",
+        "dataType": "string",
+        "length": 64,
+        "nativeType": "varchar(64)",
+        "nullable": true,
+        "ordinalPosition": 34
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "created_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": false,
+        "ordinalPosition": 35
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "updated_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": false,
+        "ordinalPosition": 36
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "imap_id_source",
+        "dataType": "string",
+        "length": 20,
+        "nativeType": "varchar(20)",
+        "nullable": true,
+        "ordinalPosition": 37
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "provider_draft_message_id_source",
+        "dataType": "string",
+        "length": 20,
+        "nativeType": "varchar(20)",
+        "nullable": true,
+        "ordinalPosition": 38
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "imap_orphan_run_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": true,
+        "ordinalPosition": 39
+      }
+    ],
+    "foreignKeys": [
+      {
+        "columns": [
+          "account_id"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "noAction",
+        "referencedCollection": {
+          "schema": "main",
+          "tableName": "mail_accounts"
+        },
+        "referencedColumns": [
+          "id"
+        ]
+      }
+    ],
+    "indexes": [
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_account_id_unique",
+        "unique": true
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_mail_messages_account_id",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "starred",
+            "order": "asc"
+          },
+          {
+            "columnName": "sort_at",
+            "order": "asc"
+          },
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_account_starred_sort_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "read",
+            "order": "asc"
+          },
+          {
+            "columnName": "sort_at",
+            "order": "asc"
+          },
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_account_read_sort_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "provider_conversation_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "sort_at",
+            "order": "asc"
+          },
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_account_conversation_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "todo",
+            "order": "asc"
+          },
+          {
+            "columnName": "sort_at",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_account_todo_sort_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "content_status",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_content_status_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "sort_at",
+            "order": "asc"
+          },
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_account_sort_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "scheduled_submission_id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_scheduled_submission_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "provider_message_id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_messages_account_provider_unique",
+        "unique": true
+      },
+      {
+        "backsConstraint": {
+          "kind": "primaryKey"
+        },
+        "keys": [
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "sqlite_autoindex_mail_messages_1",
+        "unique": true
+      }
+    ],
+    "inspection": {
+      "aspects": {
+        "checkConstraints": "partial",
+        "columns": "complete",
+        "comments": "unsupported",
+        "foreignKeys": "complete",
+        "indexes": "complete",
+        "primaryKey": "complete",
+        "uniqueConstraints": "complete",
+        "viewDefinition": "complete"
+      },
+      "warnings": [
+        {
+          "aspect": "checkConstraints",
+          "code": "SQLITE_CHECK_CONSTRAINT_PARTIAL",
+          "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete."
+        }
+      ]
+    },
+    "kind": "table",
+    "primaryKey": {
+      "columns": [
+        "id"
+      ]
+    },
+    "schema": "main",
+    "strict": false,
+    "tableName": "mail_messages",
+    "uniqueConstraints": []
+  }
+}

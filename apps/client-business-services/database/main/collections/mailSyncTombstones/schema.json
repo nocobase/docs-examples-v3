@@ -1,0 +1,104 @@
+{
+  "formatVersion": 1,
+  "name": "mailSyncTombstones",
+  "physical": {
+    "checkConstraints": [],
+    "columns": [
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "run_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 1
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "provider_message_id",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": false,
+        "ordinalPosition": 2
+      }
+    ],
+    "foreignKeys": [
+      {
+        "columns": [
+          "run_id"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "noAction",
+        "referencedCollection": {
+          "schema": "main",
+          "tableName": "mail_sync_runs"
+        },
+        "referencedColumns": [
+          "id"
+        ]
+      }
+    ],
+    "indexes": [
+      {
+        "keys": [
+          {
+            "columnName": "run_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_mail_sync_tombstones_run_id",
+        "unique": false
+      },
+      {
+        "backsConstraint": {
+          "kind": "primaryKey"
+        },
+        "keys": [
+          {
+            "columnName": "run_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "provider_message_id",
+            "order": "asc"
+          }
+        ],
+        "name": "sqlite_autoindex_mail_sync_tombstones_1",
+        "unique": true
+      }
+    ],
+    "inspection": {
+      "aspects": {
+        "checkConstraints": "partial",
+        "columns": "complete",
+        "comments": "unsupported",
+        "foreignKeys": "complete",
+        "indexes": "complete",
+        "primaryKey": "complete",
+        "uniqueConstraints": "complete",
+        "viewDefinition": "complete"
+      },
+      "warnings": [
+        {
+          "aspect": "checkConstraints",
+          "code": "SQLITE_CHECK_CONSTRAINT_PARTIAL",
+          "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete."
+        }
+      ]
+    },
+    "kind": "table",
+    "primaryKey": {
+      "columns": [
+        "run_id",
+        "provider_message_id"
+      ]
+    },
+    "schema": "main",
+    "strict": false,
+    "tableName": "mail_sync_tombstones",
+    "uniqueConstraints": []
+  }
+}

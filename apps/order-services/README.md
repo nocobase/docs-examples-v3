@@ -1,6 +1,6 @@
 # Order services
 
-A headless NocoBase application for [Server business services](https://docs.nocobase.com/core/developing-apps/server-business-services/). Confirm an order through HTTP, an application command, or a background job. All three call the same service with real authorization policies and persist through the Repository API.
+A headless NocoBase application for [Server-side services](https://docs.nocobase.com/core/developing-apps/server-business-services/). Confirm an order through HTTP, an application command, or a background job. All three call the same service with real authorization policies and persist through the Repository API.
 
 ## Requirements and scope
 

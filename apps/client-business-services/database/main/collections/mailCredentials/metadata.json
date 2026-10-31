@@ -1,0 +1,34 @@
+{
+  "document": {
+    "fields": {
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "expiresAt": {
+        "type": "datetimeTz"
+      },
+      "purpose": {
+        "type": "string"
+      },
+      "reference": {
+        "type": "string"
+      },
+      "refreshLeaseExpiresAt": {
+        "type": "datetimeTz"
+      },
+      "refreshLeaseToken": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      },
+      "value": {
+        "type": "text"
+      }
+    },
+    "name": "mailCredentials",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailCredentials"
+}

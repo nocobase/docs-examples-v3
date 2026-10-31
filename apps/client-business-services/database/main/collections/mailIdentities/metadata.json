@@ -1,0 +1,36 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "address": {
+        "type": "string"
+      },
+      "canSend": {
+        "type": "boolean"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "primaryForAccountId": {
+        "type": "uuid"
+      }
+    },
+    "name": "mailIdentities",
+    "relations": {
+      "account": {
+        "foreignKey": "accountId",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailIdentities"
+}

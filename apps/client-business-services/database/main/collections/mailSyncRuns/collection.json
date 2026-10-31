@@ -1,0 +1,507 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "id"
+        ],
+        "type": "primary"
+      },
+      {
+        "fields": [
+          "accountId"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailAccounts",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      },
+      {
+        "fields": [
+          "activeKey"
+        ],
+        "mode": "index",
+        "name": "mail_sync_runs_active_account_unique",
+        "type": "unique"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "id",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "accountId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(255)",
+          "physicalDataType": "string"
+        },
+        "length": 255,
+        "name": "requestedBy",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(20)",
+          "physicalDataType": "string"
+        },
+        "length": 20,
+        "name": "mode",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(20)",
+          "physicalDataType": "string"
+        },
+        "length": 20,
+        "name": "phase",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(20)",
+          "physicalDataType": "string"
+        },
+        "length": 20,
+        "name": "status",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(255)",
+          "physicalDataType": "string"
+        },
+        "length": 255,
+        "name": "activeKey",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "integer",
+          "defaultExpression": "'0'",
+          "nativeType": "INTEGER",
+          "physicalDataType": "integer"
+        },
+        "defaultValue": "0",
+        "name": "revision",
+        "nullable": false,
+        "type": "integer"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "nativeType": "json",
+          "physicalDataType": "json"
+        },
+        "name": "policy",
+        "nullable": false,
+        "type": "json"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "integer",
+          "defaultExpression": "'0'",
+          "nativeType": "INTEGER",
+          "physicalDataType": "integer"
+        },
+        "defaultValue": "0",
+        "name": "processedMessages",
+        "nullable": false,
+        "type": "integer"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "integer",
+          "defaultExpression": "'0'",
+          "nativeType": "INTEGER",
+          "physicalDataType": "integer"
+        },
+        "defaultValue": "0",
+        "name": "processedPages",
+        "nullable": false,
+        "type": "integer"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "historyCursor",
+        "nullable": true,
+        "type": "text"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "historyStartedAt",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "defaultExpression": "'0'",
+          "nativeType": "boolean",
+          "physicalDataType": "boolean"
+        },
+        "defaultValue": "0",
+        "name": "historyComplete",
+        "nullable": false,
+        "type": "boolean"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "defaultExpression": "'0'",
+          "nativeType": "boolean",
+          "physicalDataType": "boolean"
+        },
+        "defaultValue": "0",
+        "name": "recovering",
+        "nullable": false,
+        "type": "boolean"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "integer",
+          "defaultExpression": "'0'",
+          "nativeType": "INTEGER",
+          "physicalDataType": "integer"
+        },
+        "defaultValue": "0",
+        "name": "pendingMessages",
+        "nullable": false,
+        "type": "integer"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "folderCursor",
+        "nullable": true,
+        "type": "text"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "nativeType": "json",
+          "physicalDataType": "json"
+        },
+        "name": "baselineCursor",
+        "nullable": true,
+        "type": "json"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "nativeType": "json",
+          "physicalDataType": "json"
+        },
+        "name": "changeCursor",
+        "nullable": true,
+        "type": "json"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(100)",
+          "physicalDataType": "string"
+        },
+        "length": 100,
+        "name": "leaseToken",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "leaseExpiresAt",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "numeric",
+          "nativeType": "json",
+          "physicalDataType": "json"
+        },
+        "name": "error",
+        "nullable": true,
+        "type": "json"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "createdAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "updatedAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "completedAt",
+        "nullable": true,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "integer",
+          "defaultExpression": "'0'",
+          "nativeType": "INTEGER",
+          "physicalDataType": "integer"
+        },
+        "defaultValue": "0",
+        "name": "retryAttempts",
+        "nullable": false,
+        "type": "integer"
+      },
+      {
+        "foreignKey": "accountId",
+        "name": "account",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "accountId"
+        ],
+        "name": "idx_mail_sync_runs_account_id",
+        "order": {
+          "accountId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "status",
+              "order": "asc"
+            },
+            {
+              "field": "updatedAt",
+              "order": "asc"
+            },
+            {
+              "field": "id",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "status",
+          "updatedAt",
+          "id"
+        ],
+        "name": "mail_sync_runs_recovery_idx",
+        "order": {
+          "id": "asc",
+          "status": "asc",
+          "updatedAt": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            },
+            {
+              "field": "status",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "accountId",
+          "status"
+        ],
+        "name": "mail_sync_runs_account_status_idx",
+        "order": {
+          "accountId": "asc",
+          "status": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            },
+            {
+              "field": "createdAt",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "accountId",
+          "createdAt"
+        ],
+        "name": "mail_sync_runs_account_created_idx",
+        "order": {
+          "accountId": "asc",
+          "createdAt": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "activeKey",
+              "order": "asc"
+            }
+          ],
+          "unique": true
+        },
+        "fields": [
+          "activeKey"
+        ],
+        "name": "mail_sync_runs_active_account_unique",
+        "order": {
+          "activeKey": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "mailSyncRuns",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "mailSyncRuns",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}

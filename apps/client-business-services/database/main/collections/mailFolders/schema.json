@@ -1,0 +1,162 @@
+{
+  "formatVersion": 1,
+  "name": "mailFolders",
+  "physical": {
+    "checkConstraints": [],
+    "columns": [
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 1
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "account_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 2
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "provider_folder_id",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": false,
+        "ordinalPosition": 3
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "type",
+        "dataType": "string",
+        "length": 50,
+        "nativeType": "varchar(50)",
+        "nullable": false,
+        "ordinalPosition": 4
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "name",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": false,
+        "ordinalPosition": 5
+      },
+      {
+        "affinity": "integer",
+        "autoIncrement": false,
+        "columnName": "unread_count",
+        "dataType": "integer",
+        "nativeType": "INTEGER",
+        "nullable": true,
+        "ordinalPosition": 6
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "kind",
+        "dataType": "string",
+        "length": 20,
+        "nativeType": "varchar(20)",
+        "nullable": false,
+        "ordinalPosition": 7
+      }
+    ],
+    "foreignKeys": [
+      {
+        "columns": [
+          "account_id"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "noAction",
+        "referencedCollection": {
+          "schema": "main",
+          "tableName": "mail_accounts"
+        },
+        "referencedColumns": [
+          "id"
+        ]
+      }
+    ],
+    "indexes": [
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_mail_folders_account_id",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "provider_folder_id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_folders_account_provider_unique",
+        "unique": true
+      },
+      {
+        "backsConstraint": {
+          "kind": "primaryKey"
+        },
+        "keys": [
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "sqlite_autoindex_mail_folders_1",
+        "unique": true
+      }
+    ],
+    "inspection": {
+      "aspects": {
+        "checkConstraints": "partial",
+        "columns": "complete",
+        "comments": "unsupported",
+        "foreignKeys": "complete",
+        "indexes": "complete",
+        "primaryKey": "complete",
+        "uniqueConstraints": "complete",
+        "viewDefinition": "complete"
+      },
+      "warnings": [
+        {
+          "aspect": "checkConstraints",
+          "code": "SQLITE_CHECK_CONSTRAINT_PARTIAL",
+          "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete."
+        }
+      ]
+    },
+    "kind": "table",
+    "primaryKey": {
+      "columns": [
+        "id"
+      ]
+    },
+    "schema": "main",
+    "strict": false,
+    "tableName": "mail_folders",
+    "uniqueConstraints": []
+  }
+}
