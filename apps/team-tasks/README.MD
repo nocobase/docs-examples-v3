@@ -20,6 +20,32 @@ Choose SQLite during configuration for the tested local setup. Open the full `Lo
 
 For LAN access, put `APP_SERVER_HOST=0.0.0.0` and your chosen `APP_SERVER_PORT` in the ignored `.env.local`. Set `app.publicOrigin` with `pnpm nocobase config set app.publicOrigin=http://<lan-ip>:<port>`. Confirm the actual port printed by `pnpm dev` matches it: the dev command may choose another port when the requested one is occupied. These are local development settings.
 
+## Tables and initial data example
+
+This application also hosts the [tables and initial data guide](https://docs.nocobase.com/core/developing-apps/data-models-and-migrations/). Its `appStatuses` dictionary is independent of task workflow states and has no management page. Use the database commands and isolated tests below as its execution entries. The original task and project examples remain available.
+
+Follow the installation and configuration commands above. In this application directory, inspect and apply the database plan, then check the generated Collection cache:
+
+```bash
+pnpm nocobase db apply --connection main --dry-run
+pnpm nocobase db apply --connection main
+pnpm nocobase collections generate --connection main --check
+pnpm exec vitest run --project node tests/database/app-statuses.test.ts
+```
+
+The application plan includes registered plugins and the application's other migrations and seeds. Repeating `db apply` skips successful tasks. The status dictionary contains `draft` / `Draft` and `published` / `Published`, with a nullable `description`. An existing administrator-edited title is preserved. The upgrade test inserts an old record before adding `description`; it checks that the title survives and the new field is null, then verifies rollback and reapplication. Rolling back the base migration deletes the dictionary; tests use disposable databases instead of the configured application database.
+
+| Guide usage | Entry | Source | Expected result |
+| --- | --- | --- | --- |
+| Create the dictionary | `db apply`; base migration test | `database/main/migrations/202611040001_create_app_statuses.ts` | Required code/title fields and rejection of duplicate codes |
+| Install defaults | `db apply`; initialization tests | `database/main/seeds/202611040002_default_app_statuses.ts` | Two defaults, preserved administrator edits, no duplicates on repeated logic |
+| Add an optional field | `db apply`; upgrade test | `database/main/migrations/202611040003_add_app_status_description.ts` | Old titles retained; description is nullable; rollback retains old records |
+| Fail and retry initialization | `tests/database/app-statuses.test.ts` | `tests/fixtures/app-statuses/failing-seeds/` | An intentional post-write error leaves no records or success history; retry succeeds |
+
+The test-only Seed sources import the real initialization implementation. A second isolated history table deliberately reruns it to distinguish business idempotency from history-based skipping; it does not alter application history. The failure fixture adds only a controlled failure after the production Seed runs.
+
+Validation for this addition: the five database tests passed on SQLite using `@nocobase/db` 1.0.0-beta.23 and `@nocobase/app-testing` 0.1.0-beta.6. Scoped ESLint and the server TypeScript check also passed. This is not a fresh verification of the application UI, full build, or other database dialects. For another dialect, install its driver and provide the test connection settings documented by the testing tools before running the same tests.
+
 ## Walk through the tutorial
 
 1. Open **System settings → Users → New user**. Create Alice with a simple username such as `alice`, an email and an initial password. Keep the default Member role and add **Task member** in Permission sets. Member alone does not grant task access. Do not also assign Task manager or System administrator when testing restricted access.
