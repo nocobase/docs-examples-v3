@@ -1,0 +1,8 @@
+server:
+  host: 0.0.0.0
+  port: 13210
+app:
+  publicOrigin: http://localhost:13210
+jobs:
+  default: memory
+# pnpm setup generates config.yml and demo credentials on first run.

@@ -41,3 +41,5 @@ See [application conventions](apps/README.md).
 - [Client services](apps/client-business-services/README.MD): shared client operations, React subscriptions, list refresh, cancellation and resource cleanup in a product catalog.
 
 - [Product Catalog](apps/product-catalog/README.md): HTTP Web routes, custom APIs, Repository reads, downloads, permissions and API documentation.
+
+- [Order services](apps/order-services/README.md): reusable server services, real authorization, transactions, application commands and background confirmation jobs.
