@@ -16,7 +16,7 @@ async function shot(page: Page, name: string) {
   await mkdir(captures, { recursive: true });
   await page.screenshot({
     path: path.join(captures, `${name}.png`),
-    fullPage: true,
+    fullPage: false,
     animations: 'disabled',
   });
 }
