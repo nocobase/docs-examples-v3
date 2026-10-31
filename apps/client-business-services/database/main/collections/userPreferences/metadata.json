@@ -1,0 +1,28 @@
+{
+  "document": {
+    "fields": {
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "id": {
+        "type": "string"
+      },
+      "key": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "value": {
+        "type": "text"
+      }
+    },
+    "name": "userPreferences",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "userPreferences"
+}

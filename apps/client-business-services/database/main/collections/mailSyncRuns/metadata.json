@@ -1,0 +1,96 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "activeKey": {
+        "type": "string"
+      },
+      "baselineCursor": {
+        "type": "json"
+      },
+      "changeCursor": {
+        "type": "json"
+      },
+      "completedAt": {
+        "type": "datetimeTz"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "error": {
+        "type": "json"
+      },
+      "folderCursor": {
+        "type": "text"
+      },
+      "historyComplete": {
+        "type": "boolean"
+      },
+      "historyCursor": {
+        "type": "text"
+      },
+      "historyStartedAt": {
+        "type": "datetimeTz"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "leaseExpiresAt": {
+        "type": "datetimeTz"
+      },
+      "leaseToken": {
+        "type": "string"
+      },
+      "mode": {
+        "type": "string"
+      },
+      "pendingMessages": {
+        "type": "integer"
+      },
+      "phase": {
+        "type": "string"
+      },
+      "policy": {
+        "type": "json"
+      },
+      "processedMessages": {
+        "type": "integer"
+      },
+      "processedPages": {
+        "type": "integer"
+      },
+      "recovering": {
+        "type": "boolean"
+      },
+      "requestedBy": {
+        "type": "string"
+      },
+      "retryAttempts": {
+        "type": "integer"
+      },
+      "revision": {
+        "type": "integer"
+      },
+      "status": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailSyncRuns",
+    "relations": {
+      "account": {
+        "foreignKey": "accountId",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailSyncRuns"
+}

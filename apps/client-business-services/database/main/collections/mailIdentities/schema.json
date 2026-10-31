@@ -1,0 +1,166 @@
+{
+  "formatVersion": 1,
+  "name": "mailIdentities",
+  "physical": {
+    "checkConstraints": [],
+    "columns": [
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 1
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "account_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 2
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "address",
+        "dataType": "string",
+        "length": 320,
+        "nativeType": "varchar(320)",
+        "nullable": false,
+        "ordinalPosition": 3
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "display_name",
+        "dataType": "string",
+        "length": 255,
+        "nativeType": "varchar(255)",
+        "nullable": true,
+        "ordinalPosition": 4
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "primary_for_account_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": true,
+        "ordinalPosition": 5
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "can_send",
+        "dataType": "boolean",
+        "default": {
+          "expression": "'1'",
+          "value": "1"
+        },
+        "nativeType": "boolean",
+        "nullable": false,
+        "ordinalPosition": 6
+      }
+    ],
+    "foreignKeys": [
+      {
+        "columns": [
+          "account_id"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "noAction",
+        "referencedCollection": {
+          "schema": "main",
+          "tableName": "mail_accounts"
+        },
+        "referencedColumns": [
+          "id"
+        ]
+      }
+    ],
+    "indexes": [
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_mail_identities_account_id",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "primary_for_account_id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_identities_primary_account_unique",
+        "unique": true
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "address",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_identities_account_address_unique",
+        "unique": true
+      },
+      {
+        "backsConstraint": {
+          "kind": "primaryKey"
+        },
+        "keys": [
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "sqlite_autoindex_mail_identities_1",
+        "unique": true
+      }
+    ],
+    "inspection": {
+      "aspects": {
+        "checkConstraints": "partial",
+        "columns": "complete",
+        "comments": "unsupported",
+        "foreignKeys": "complete",
+        "indexes": "complete",
+        "primaryKey": "complete",
+        "uniqueConstraints": "complete",
+        "viewDefinition": "complete"
+      },
+      "warnings": [
+        {
+          "aspect": "checkConstraints",
+          "code": "SQLITE_CHECK_CONSTRAINT_PARTIAL",
+          "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete."
+        }
+      ]
+    },
+    "kind": "table",
+    "primaryKey": {
+      "columns": [
+        "id"
+      ]
+    },
+    "schema": "main",
+    "strict": false,
+    "tableName": "mail_identities",
+    "uniqueConstraints": []
+  }
+}

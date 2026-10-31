@@ -1,0 +1,183 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "messageId",
+          "labelId"
+        ],
+        "type": "primary"
+      },
+      {
+        "fields": [
+          "labelId"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailLabels",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      },
+      {
+        "fields": [
+          "messageId"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailMessages",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "messageId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "labelId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "foreignKey": "messageId",
+        "name": "message",
+        "target": "mailMessages",
+        "targetKey": "id",
+        "type": "belongsTo"
+      },
+      {
+        "foreignKey": "labelId",
+        "name": "label",
+        "target": "mailLabels",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "labelId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "labelId"
+        ],
+        "name": "idx_mail_message_labels_label_id",
+        "order": {
+          "labelId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "messageId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "messageId"
+        ],
+        "name": "idx_mail_message_labels_message_id",
+        "order": {
+          "messageId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "labelId",
+              "order": "asc"
+            },
+            {
+              "field": "messageId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "labelId",
+          "messageId"
+        ],
+        "name": "mail_message_labels_label_idx",
+        "order": {
+          "labelId": "asc",
+          "messageId": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "mailMessageLabels",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "mailMessageLabels",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}

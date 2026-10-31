@@ -1,0 +1,33 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "messageId": {
+        "type": "uuid"
+      },
+      "providerFolderId": {
+        "type": "string"
+      }
+    },
+    "name": "mailMessageFolders",
+    "relations": {
+      "account": {
+        "foreignKey": "accountId",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      },
+      "message": {
+        "foreignKey": "messageId",
+        "target": "mailMessages",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailMessageFolders"
+}

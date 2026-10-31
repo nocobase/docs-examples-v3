@@ -1,0 +1,68 @@
+{
+  "document": {
+    "fields": {
+      "acceptedAt": {
+        "type": "datetimeTz"
+      },
+      "acceptedUserId": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "data": {
+        "type": "json"
+      },
+      "email": {
+        "type": "string"
+      },
+      "expiresAt": {
+        "type": "datetimeTz"
+      },
+      "id": {
+        "type": "string"
+      },
+      "invitedById": {
+        "type": "string"
+      },
+      "roleScopes": {
+        "type": "json"
+      },
+      "sendError": {
+        "type": "string"
+      },
+      "sentAt": {
+        "type": "datetimeTz"
+      },
+      "status": {
+        "type": "enum",
+        "values": [
+          "pending",
+          "accepted",
+          "revoked"
+        ]
+      },
+      "summary": {
+        "type": "json"
+      },
+      "tokenHash": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "userInvitations",
+    "relations": {
+      "invitedBy": {
+        "foreignKey": "invitedById",
+        "target": "user",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "userInvitations"
+}

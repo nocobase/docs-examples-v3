@@ -1,0 +1,95 @@
+{
+  "document": {
+    "fields": {
+      "appName": {
+        "type": "string"
+      },
+      "appliedLimit": {
+        "type": "integer"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "cron": {
+        "type": "string"
+      },
+      "deactivatedAt": {
+        "type": "datetimeTz"
+      },
+      "definitionHash": {
+        "type": "string"
+      },
+      "description": {
+        "type": "text"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "fromDate": {
+        "type": "datetimeTz"
+      },
+      "id": {
+        "type": "string"
+      },
+      "inactiveReason": {
+        "type": "string"
+      },
+      "key": {
+        "type": "string"
+      },
+      "lastOccurrenceId": {
+        "type": "string"
+      },
+      "lastRunAt": {
+        "type": "datetimeTz"
+      },
+      "lastSeenManifest": {
+        "type": "text"
+      },
+      "lifecycleState": {
+        "type": "string"
+      },
+      "nextRunAt": {
+        "type": "datetimeTz"
+      },
+      "runCount": {
+        "type": "integer"
+      },
+      "runLimit": {
+        "type": "integer"
+      },
+      "sourceType": {
+        "type": "string"
+      },
+      "syncError": {
+        "type": "text"
+      },
+      "syncStatus": {
+        "type": "string"
+      },
+      "targetConfig": {
+        "type": "json"
+      },
+      "targetType": {
+        "type": "string"
+      },
+      "timezone": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "toDate": {
+        "type": "datetimeTz"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "scheduleDefinitions",
+    "relations": {},
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "scheduleDefinitions"
+}

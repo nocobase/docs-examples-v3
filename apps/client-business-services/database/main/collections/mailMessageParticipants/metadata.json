@@ -1,0 +1,25 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "address": {
+        "type": "string"
+      },
+      "domain": {
+        "type": "string"
+      },
+      "messageId": {
+        "type": "uuid"
+      },
+      "role": {
+        "type": "string"
+      }
+    },
+    "name": "mailMessageParticipants",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailMessageParticipants"
+}

@@ -1,0 +1,22 @@
+{
+  "document": {
+    "fields": {
+      "digest": {
+        "type": "string"
+      },
+      "expiresAt": {
+        "type": "datetime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "result": {
+        "type": "json"
+      }
+    },
+    "name": "mutationReceipts",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mutationReceipts"
+}
