@@ -1,0 +1,8 @@
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@nocobase/app-server@3.0.0-beta.5'
+  - '@nocobase/db@1.0.0-beta.24'
+  - '@nocobase/jobs@1.0.0-beta.5'
+  - '@nocobase/mailer@0.1.0-beta.1'
+  - '@nocobase/queue@1.0.0-beta.10'

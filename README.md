@@ -45,3 +45,5 @@ See [application conventions](apps/README.md).
 - [Order services](apps/order-services/README.md): reusable server services, real authorization, transactions, application commands and background confirmation jobs.
 
 - [Customer Access](apps/customer-access/README.md): native authentication, independent business actions, owned-record and field policies, and scoped order reassignment.
+
+- [Server localization](apps/server-localization/README.md): report messages in request and recipient languages, real session preferences, plugin overrides and localized API errors.
