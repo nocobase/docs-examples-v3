@@ -43,3 +43,5 @@ See [application conventions](apps/README.md).
 - [Product Catalog](apps/product-catalog/README.md): HTTP Web routes, custom APIs, Repository reads, downloads, permissions and API documentation.
 
 - [Order services](apps/order-services/README.md): reusable server services, real authorization, transactions, application commands and background confirmation jobs.
+
+- [Customer Access](apps/customer-access/README.md): native authentication, independent business actions, owned-record and field policies, and scoped order reassignment.
