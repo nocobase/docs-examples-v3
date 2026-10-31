@@ -118,6 +118,9 @@ test('history, unload, direct entry and missing product', async ({ page }) => {
   await expect(
     page.getByRole('button', { name: 'Save changes' }),
   ).toBeDisabled();
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(page).toHaveURL(/catalog$/);
+  await expect(page.getByRole('alertdialog')).toHaveCount(0);
 });
 test('business block gets names, dates, data and action results from its caller', async ({
   page,

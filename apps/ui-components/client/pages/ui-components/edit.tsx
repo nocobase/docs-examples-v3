@@ -30,7 +30,10 @@ function ProductEditor({ productId }: { productId: string }) {
   const [fail, setFail] = useState(false);
   const [error, setError] = useState('');
   const [invalid, setInvalid] = useState(false);
-  const leave = useEditorLeave(name !== product?.name, pending);
+  const leave = useEditorLeave(
+    Boolean(product && name !== product.name),
+    pending,
+  );
   return (
     <RouteDialog
       title={t('catalog.editTitle')}
