@@ -5,9 +5,9 @@ import {
 } from '@nocobase/app-plugin-authorization/client';
 import { renderWithApp, answerApi } from '@nocobase/app-testing/client';
 import { PageBreadcrumbProvider } from '@nocobase/app-client';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { renderRouteTree } from '../../client/routing/route-tree.js';
 import { Routes } from 'react-router';
@@ -15,11 +15,20 @@ import { resolveDemoRoutes } from './routing-fixture.js';
 import enUS from '../../client/locales/en-US.js';
 function LocationProbe() {
   const location = useLocation();
+  const navigate = useNavigate();
   return (
-    <output data-testid='location'>
-      {location.pathname}
-      {location.search}
-    </output>
+    <>
+      <output data-testid='location'>
+        {location.pathname}
+        {location.search}
+      </output>
+      <button
+        data-testid='navigate-away'
+        onClick={() => void navigate('/reports/owners')}
+      >
+        Navigate away
+      </button>
+    </>
   );
 }
 async function open(route: string, unrestricted = true, ids: string[] = []) {
@@ -138,4 +147,47 @@ describe('routing example interactions', () => {
       ),
     );
   });
+
+  it.each(['close first', 'navigation first'])(
+    'settles overlapping leave requests and allows a later retry: %s',
+    async (order) => {
+      const user = userEvent.setup();
+      await open('/projects/new?q=Harbor');
+      await user.type(
+        await screen.findByLabelText('Project name'),
+        'New project',
+      );
+      const close = screen.getByRole('button', { name: 'Close', exact: true });
+      const navigate = screen.getByTestId('navigate-away');
+
+      // Dispatch navigation independently of the modal's pointer lock, as a
+      // router or history request can arrive while confirmation is open.
+      fireEvent.click(order === 'close first' ? close : navigate);
+      expect(await screen.findByRole('alertdialog')).toBeVisible();
+      await act(async () => {
+        fireEvent.click(order === 'close first' ? navigate : close);
+      });
+      expect(screen.getAllByRole('alertdialog')).toHaveLength(1);
+      await user.click(screen.getByRole('button', { name: 'Keep editing' }));
+
+      expect(screen.getByTestId('location')).toHaveTextContent(
+        '/projects/new?q=Harbor',
+      );
+      expect(screen.getByLabelText('Project name')).toHaveValue('New project');
+
+      await user.click(close);
+      expect(await screen.findByRole('alertdialog')).toBeVisible();
+      await user.click(screen.getByRole('button', { name: 'Keep editing' }));
+
+      fireEvent.click(navigate);
+      expect(await screen.findByRole('alertdialog')).toBeVisible();
+      await user.click(screen.getByRole('button', { name: 'Discard draft' }));
+      await waitFor(() =>
+        expect(screen.getByTestId('location')).toHaveTextContent(
+          '/reports/owners',
+        ),
+      );
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    },
+  );
 });

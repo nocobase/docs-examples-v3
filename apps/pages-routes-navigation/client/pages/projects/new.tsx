@@ -36,21 +36,30 @@ export default function NewProjectDraft() {
   const [preview, setPreview] = useState(false);
   const dirtyRef = useRef(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const pendingDecisionRef = useRef<((allowed: boolean) => void) | null>(null);
+  const pendingDecisionRef = useRef<{
+    promise: Promise<boolean>;
+    resolve: (allowed: boolean) => void;
+  } | null>(null);
   const canLeave = useCallback((): boolean | Promise<boolean> => {
     if (!dirtyRef.current) return true;
-    return new Promise<boolean>((resolve) => {
-      pendingDecisionRef.current = resolve;
+    // Closing the overlay and navigating can ask before either has an answer.
+    if (!pendingDecisionRef.current) {
+      let resolve!: (allowed: boolean) => void;
+      const promise = new Promise<boolean>((done) => {
+        resolve = done;
+      });
+      pendingDecisionRef.current = { promise, resolve };
       setConfirmOpen(true);
-    });
+    }
+    return pendingDecisionRef.current.promise;
   }, []);
   const decide = (allowed: boolean) => {
     setConfirmOpen(false);
     if (allowed) dirtyRef.current = false;
-    pendingDecisionRef.current?.(allowed);
+    pendingDecisionRef.current?.resolve(allowed);
     pendingDecisionRef.current = null;
   };
-  useEffect(() => () => pendingDecisionRef.current?.(false), []);
+  useEffect(() => () => pendingDecisionRef.current?.resolve(false), []);
   useNavigationGuard(canLeave);
   useEffect(() => {
     const guard = (event: BeforeUnloadEvent) => {
