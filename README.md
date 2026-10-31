@@ -39,3 +39,5 @@ See [application conventions](apps/README.md).
 - [Customer Directory](apps/customer-directory/README.md): real data requests, URL query state, submission recovery, permission changes, and pagination correction.
 
 - [Client services](apps/client-business-services/README.MD): shared client operations, React subscriptions, list refresh, cancellation and resource cleanup in a product catalog.
+
+- [Product Catalog](apps/product-catalog/README.md): HTTP Web routes, custom APIs, Repository reads, downloads, permissions and API documentation.
