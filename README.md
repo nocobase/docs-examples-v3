@@ -31,3 +31,5 @@ See [application conventions](apps/README.md).
 - [Agents guide](apps/agents-guide/README.md): model conversations, business Skills, and Runner setup.
 
 - [Pages, routes and navigation](apps/pages-routes-navigation/README.MD): page registration, overlays, report tabs, access control and plugin component overrides, with reproducible documentation screenshots.
+
+- [Localization](apps/localization/README.MD): product translations, plural counts, formatting, saved language preferences, partial Japanese resources and plugin overrides.
