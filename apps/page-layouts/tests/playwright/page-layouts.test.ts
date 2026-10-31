@@ -49,6 +49,8 @@ async function capture(page: Page, name: string) {
   await mkdir(process.env.SCREENSHOT_DIR, { recursive: true });
   await page.screenshot({
     path: path.join(process.env.SCREENSHOT_DIR, `${name}.png`),
+    // Capture the complete application window at its current viewport size.
+    fullPage: false,
     animations: 'disabled',
   });
 }

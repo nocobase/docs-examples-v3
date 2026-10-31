@@ -37,7 +37,7 @@ APP_SERVER_HOST=0.0.0.0 APP_SERVER_PORT=13253 pnpm dev
 
 ## Usage, source and observable results
 
-The browser test can capture English screenshots. Selected images are maintained in `website-v3/doc/public/assets/core/developing-apps/page-layouts/`, shared by both documentation languages.
+The browser test captures the complete application window at its current viewport size (`fullPage: false`): 1440 × 900 for desktop examples and 375 × 812 for narrow-screen layout examples (375 × 667 for the drawer geometry check). Keep the header, navigation and visible content in the image; do not crop a component or expand scrolling content into a long screenshot. Selected images are maintained in `website-v3/doc/public/assets/core/developing-apps/page-layouts/`, shared by both documentation languages.
 
 | Documentation usage                | App entry / operation                                            | Source                                                                         | Screenshot / output                      | Expected result and verification                                                                                             |
 | ---------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
