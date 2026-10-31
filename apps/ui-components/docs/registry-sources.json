@@ -1,0 +1,14 @@
+{
+  "template": {
+    "package": "@nocobase/app-template-default",
+    "version": "1.0.0-beta.85"
+  },
+  "approvalUi": {
+    "registryUrl": "https://ui.nocobase.com/r/approval-ui.json",
+    "retrievedAt": "2026-10-31",
+    "sha256": "34bd45a9d69d841ec43fe33a51c08c6695d49af6f6b9a0544e5a915fbc55bd18",
+    "files": 13,
+    "installedAt": "client/extensions/nocobase-approval-ui"
+  },
+  "primitives": "Template components retained; avatar added with the pinned shadcn CLI. Installed source and lockfile are the reproducible baseline."
+}
