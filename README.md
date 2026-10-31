@@ -32,6 +32,8 @@ See [application conventions](apps/README.md).
 
 - [Pages, routes and navigation](apps/pages-routes-navigation/README.MD): page registration, overlays, report tabs, access control and plugin component overrides, with reproducible documentation screenshots.
 
+- [Themes and styles](apps/themes-and-styles/README.md): semantic tokens, brand presets, appearance hooks and preference defaults in a product catalog.
+
 - [Localization](apps/localization/README.MD): product translations, plural counts, formatting, saved language preferences, partial Japanese resources and plugin overrides.
 
 - [Customer Directory](apps/customer-directory/README.md): real data requests, URL query state, submission recovery, permission changes, and pagination correction.
