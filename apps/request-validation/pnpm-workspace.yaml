@@ -1,0 +1,5 @@
+allowBuilds:
+  better-sqlite3: false
+  esbuild: true
+ignoredOptionalDependencies: [msgpackr-extract]
+verifyDepsBeforeRun: false
