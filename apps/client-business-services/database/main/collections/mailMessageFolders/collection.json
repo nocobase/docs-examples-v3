@@ -1,0 +1,201 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "messageId",
+          "providerFolderId"
+        ],
+        "type": "primary"
+      },
+      {
+        "fields": [
+          "messageId"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailMessages",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      },
+      {
+        "fields": [
+          "accountId"
+        ],
+        "onDelete": "no action",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailAccounts",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "accountId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "messageId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(500)",
+          "physicalDataType": "string"
+        },
+        "length": 500,
+        "name": "providerFolderId",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "foreignKey": "accountId",
+        "name": "account",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      },
+      {
+        "foreignKey": "messageId",
+        "name": "message",
+        "target": "mailMessages",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "messageId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "messageId"
+        ],
+        "name": "idx_mail_message_folders_message_id",
+        "order": {
+          "messageId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "accountId"
+        ],
+        "name": "idx_mail_message_folders_account_id",
+        "order": {
+          "accountId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            },
+            {
+              "field": "providerFolderId",
+              "order": "asc"
+            },
+            {
+              "field": "messageId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "accountId",
+          "providerFolderId",
+          "messageId"
+        ],
+        "name": "mail_message_folders_account_folder_idx",
+        "order": {
+          "accountId": "asc",
+          "messageId": "asc",
+          "providerFolderId": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "mailMessageFolders",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "mailMessageFolders",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}

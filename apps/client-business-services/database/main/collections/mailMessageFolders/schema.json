@@ -1,0 +1,156 @@
+{
+  "formatVersion": 1,
+  "name": "mailMessageFolders",
+  "physical": {
+    "checkConstraints": [],
+    "columns": [
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "account_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 1
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "message_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 2
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "provider_folder_id",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": false,
+        "ordinalPosition": 3
+      }
+    ],
+    "foreignKeys": [
+      {
+        "columns": [
+          "message_id"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "noAction",
+        "referencedCollection": {
+          "schema": "main",
+          "tableName": "mail_messages"
+        },
+        "referencedColumns": [
+          "id"
+        ]
+      },
+      {
+        "columns": [
+          "account_id"
+        ],
+        "onDelete": "noAction",
+        "onUpdate": "noAction",
+        "referencedCollection": {
+          "schema": "main",
+          "tableName": "mail_accounts"
+        },
+        "referencedColumns": [
+          "id"
+        ]
+      }
+    ],
+    "indexes": [
+      {
+        "keys": [
+          {
+            "columnName": "message_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_mail_message_folders_message_id",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_mail_message_folders_account_id",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "account_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "provider_folder_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "message_id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_message_folders_account_folder_idx",
+        "unique": false
+      },
+      {
+        "backsConstraint": {
+          "kind": "primaryKey"
+        },
+        "keys": [
+          {
+            "columnName": "message_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "provider_folder_id",
+            "order": "asc"
+          }
+        ],
+        "name": "sqlite_autoindex_mail_message_folders_1",
+        "unique": true
+      }
+    ],
+    "inspection": {
+      "aspects": {
+        "checkConstraints": "partial",
+        "columns": "complete",
+        "comments": "unsupported",
+        "foreignKeys": "complete",
+        "indexes": "complete",
+        "primaryKey": "complete",
+        "uniqueConstraints": "complete",
+        "viewDefinition": "complete"
+      },
+      "warnings": [
+        {
+          "aspect": "checkConstraints",
+          "code": "SQLITE_CHECK_CONSTRAINT_PARTIAL",
+          "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete."
+        }
+      ]
+    },
+    "kind": "table",
+    "primaryKey": {
+      "columns": [
+        "message_id",
+        "provider_folder_id"
+      ]
+    },
+    "schema": "main",
+    "strict": false,
+    "tableName": "mail_message_folders",
+    "uniqueConstraints": []
+  }
+}

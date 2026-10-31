@@ -1,0 +1,32 @@
+{
+  "document": {
+    "fields": {
+      "createdAt": {
+        "type": "datetime"
+      },
+      "grants": {
+        "type": "json"
+      },
+      "id": {
+        "type": "string"
+      },
+      "key": {
+        "type": "string"
+      },
+      "revision": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "name": "authorizationPermissionSets",
+    "relations": {},
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "authorizationPermissionSets"
+}

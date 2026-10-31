@@ -1,0 +1,49 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "invalidationReason": {
+        "type": "string"
+      },
+      "messageId": {
+        "type": "uuid"
+      },
+      "providerFolderId": {
+        "type": "string"
+      },
+      "read": {
+        "type": "boolean"
+      },
+      "receivedAt": {
+        "type": "datetimeTz"
+      },
+      "starred": {
+        "type": "boolean"
+      },
+      "status": {
+        "type": "string"
+      },
+      "uid": {
+        "type": "bigInt"
+      },
+      "uidValidity": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailMessageImapLocations",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailMessageImapLocations"
+}

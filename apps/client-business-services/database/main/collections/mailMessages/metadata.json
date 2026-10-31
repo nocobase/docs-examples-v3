@@ -1,0 +1,135 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "attachments": {
+        "type": "json"
+      },
+      "contentError": {
+        "type": "string"
+      },
+      "contentStatus": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "datetimeTz"
+      },
+      "draft": {
+        "type": "boolean"
+      },
+      "draftConflict": {
+        "type": "json"
+      },
+      "draftSource": {
+        "type": "text"
+      },
+      "html": {
+        "type": "text"
+      },
+      "id": {
+        "type": "uuid"
+      },
+      "imapIdSource": {
+        "type": "string"
+      },
+      "imapOrphanRunId": {
+        "type": "uuid"
+      },
+      "inReplyTo": {
+        "type": "string"
+      },
+      "internetMessageId": {
+        "type": "text"
+      },
+      "note": {
+        "type": "text"
+      },
+      "preview": {
+        "type": "text"
+      },
+      "providerConversationId": {
+        "type": "string"
+      },
+      "providerDraftId": {
+        "type": "string"
+      },
+      "providerDraftMessageId": {
+        "type": "string"
+      },
+      "providerDraftMessageIdSource": {
+        "type": "string"
+      },
+      "providerMessageId": {
+        "type": "string"
+      },
+      "read": {
+        "type": "boolean"
+      },
+      "receivedAt": {
+        "type": "datetimeTz"
+      },
+      "recipients": {
+        "type": "json"
+      },
+      "recipientsSearch": {
+        "type": "text"
+      },
+      "references": {
+        "type": "json"
+      },
+      "remoteDraftFingerprint": {
+        "type": "string"
+      },
+      "replyTo": {
+        "type": "json"
+      },
+      "scheduledSubmissionId": {
+        "type": "string"
+      },
+      "sender": {
+        "type": "json"
+      },
+      "senderSearch": {
+        "type": "text"
+      },
+      "sentAt": {
+        "type": "datetimeTz"
+      },
+      "size": {
+        "type": "integer"
+      },
+      "sortAt": {
+        "type": "datetimeTz"
+      },
+      "starred": {
+        "type": "boolean"
+      },
+      "subject": {
+        "type": "string"
+      },
+      "text": {
+        "type": "text"
+      },
+      "todo": {
+        "type": "boolean"
+      },
+      "updatedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailMessages",
+    "relations": {
+      "account": {
+        "foreignKey": "accountId",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailMessages"
+}

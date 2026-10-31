@@ -1,0 +1,24 @@
+{
+  "document": {
+    "fields": {
+      "providerMessageId": {
+        "type": "string"
+      },
+      "runId": {
+        "type": "uuid"
+      }
+    },
+    "name": "mailSyncTombstones",
+    "relations": {
+      "run": {
+        "foreignKey": "runId",
+        "target": "mailSyncRuns",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailSyncTombstones"
+}

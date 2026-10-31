@@ -1,0 +1,25 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "availableAt": {
+        "type": "datetimeTz"
+      },
+      "failed": {
+        "type": "boolean"
+      },
+      "leaseExpiresAt": {
+        "type": "datetimeTz"
+      },
+      "leaseToken": {
+        "type": "string"
+      }
+    },
+    "name": "mailAccountRemovals",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailAccountRemovals"
+}

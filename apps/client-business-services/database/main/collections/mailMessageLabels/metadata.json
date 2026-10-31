@@ -1,0 +1,30 @@
+{
+  "document": {
+    "fields": {
+      "labelId": {
+        "type": "uuid"
+      },
+      "messageId": {
+        "type": "uuid"
+      }
+    },
+    "name": "mailMessageLabels",
+    "relations": {
+      "label": {
+        "foreignKey": "labelId",
+        "target": "mailLabels",
+        "targetKey": "id",
+        "type": "belongsTo"
+      },
+      "message": {
+        "foreignKey": "messageId",
+        "target": "mailMessages",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailMessageLabels"
+}

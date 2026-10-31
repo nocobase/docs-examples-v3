@@ -1,0 +1,27 @@
+{
+  "document": {
+    "fields": {
+      "accountId": {
+        "type": "uuid"
+      },
+      "requestToken": {
+        "type": "string"
+      },
+      "requestedAt": {
+        "type": "datetimeTz"
+      }
+    },
+    "name": "mailPushPending",
+    "relations": {
+      "account": {
+        "foreignKey": "accountId",
+        "target": "mailAccounts",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    },
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "mailPushPending"
+}

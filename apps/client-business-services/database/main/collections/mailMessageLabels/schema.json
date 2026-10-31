@@ -1,0 +1,142 @@
+{
+  "formatVersion": 1,
+  "name": "mailMessageLabels",
+  "physical": {
+    "checkConstraints": [],
+    "columns": [
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "message_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 1
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "label_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 2
+      }
+    ],
+    "foreignKeys": [
+      {
+        "columns": [
+          "label_id"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "noAction",
+        "referencedCollection": {
+          "schema": "main",
+          "tableName": "mail_labels"
+        },
+        "referencedColumns": [
+          "id"
+        ]
+      },
+      {
+        "columns": [
+          "message_id"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "noAction",
+        "referencedCollection": {
+          "schema": "main",
+          "tableName": "mail_messages"
+        },
+        "referencedColumns": [
+          "id"
+        ]
+      }
+    ],
+    "indexes": [
+      {
+        "keys": [
+          {
+            "columnName": "label_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_mail_message_labels_label_id",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "message_id",
+            "order": "asc"
+          }
+        ],
+        "name": "idx_mail_message_labels_message_id",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "label_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "message_id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_message_labels_label_idx",
+        "unique": false
+      },
+      {
+        "backsConstraint": {
+          "kind": "primaryKey"
+        },
+        "keys": [
+          {
+            "columnName": "message_id",
+            "order": "asc"
+          },
+          {
+            "columnName": "label_id",
+            "order": "asc"
+          }
+        ],
+        "name": "sqlite_autoindex_mail_message_labels_1",
+        "unique": true
+      }
+    ],
+    "inspection": {
+      "aspects": {
+        "checkConstraints": "partial",
+        "columns": "complete",
+        "comments": "unsupported",
+        "foreignKeys": "complete",
+        "indexes": "complete",
+        "primaryKey": "complete",
+        "uniqueConstraints": "complete",
+        "viewDefinition": "complete"
+      },
+      "warnings": [
+        {
+          "aspect": "checkConstraints",
+          "code": "SQLITE_CHECK_CONSTRAINT_PARTIAL",
+          "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete."
+        }
+      ]
+    },
+    "kind": "table",
+    "primaryKey": {
+      "columns": [
+        "message_id",
+        "label_id"
+      ]
+    },
+    "schema": "main",
+    "strict": false,
+    "tableName": "mail_message_labels",
+    "uniqueConstraints": []
+  }
+}

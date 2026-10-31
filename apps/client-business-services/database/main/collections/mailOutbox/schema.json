@@ -1,0 +1,220 @@
+{
+  "formatVersion": 1,
+  "name": "mailOutbox",
+  "physical": {
+    "checkConstraints": [],
+    "columns": [
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 1
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "type",
+        "dataType": "string",
+        "length": 50,
+        "nativeType": "varchar(50)",
+        "nullable": false,
+        "ordinalPosition": 2
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "aggregate_id",
+        "dataType": "char",
+        "length": 36,
+        "nativeType": "char(36)",
+        "nullable": false,
+        "ordinalPosition": 3
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "deduplication_key",
+        "dataType": "string",
+        "length": 500,
+        "nativeType": "varchar(500)",
+        "nullable": false,
+        "ordinalPosition": 4
+      },
+      {
+        "affinity": "numeric",
+        "autoIncrement": false,
+        "columnName": "payload",
+        "dataType": "json",
+        "nativeType": "json",
+        "nullable": false,
+        "ordinalPosition": 5
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "status",
+        "dataType": "string",
+        "length": 20,
+        "nativeType": "varchar(20)",
+        "nullable": false,
+        "ordinalPosition": 6
+      },
+      {
+        "affinity": "integer",
+        "autoIncrement": false,
+        "columnName": "attempts",
+        "dataType": "integer",
+        "default": {
+          "expression": "'0'",
+          "value": "0"
+        },
+        "nativeType": "INTEGER",
+        "nullable": false,
+        "ordinalPosition": 7
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "available_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": false,
+        "ordinalPosition": 8
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "lease_token",
+        "dataType": "string",
+        "length": 100,
+        "nativeType": "varchar(100)",
+        "nullable": true,
+        "ordinalPosition": 9
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "lease_expires_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 10
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "created_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": false,
+        "ordinalPosition": 11
+      },
+      {
+        "affinity": "text",
+        "autoIncrement": false,
+        "columnName": "published_at",
+        "dataType": "text",
+        "nativeType": "TEXT",
+        "nullable": true,
+        "ordinalPosition": 12
+      }
+    ],
+    "foreignKeys": [],
+    "indexes": [
+      {
+        "keys": [
+          {
+            "columnName": "status",
+            "order": "asc"
+          },
+          {
+            "columnName": "published_at",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_outbox_retention_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "status",
+            "order": "asc"
+          },
+          {
+            "columnName": "available_at",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_outbox_ready_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "aggregate_id",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_outbox_aggregate_idx",
+        "unique": false
+      },
+      {
+        "keys": [
+          {
+            "columnName": "deduplication_key",
+            "order": "asc"
+          }
+        ],
+        "name": "mail_outbox_deduplication_unique",
+        "unique": true
+      },
+      {
+        "backsConstraint": {
+          "kind": "primaryKey"
+        },
+        "keys": [
+          {
+            "columnName": "id",
+            "order": "asc"
+          }
+        ],
+        "name": "sqlite_autoindex_mail_outbox_1",
+        "unique": true
+      }
+    ],
+    "inspection": {
+      "aspects": {
+        "checkConstraints": "partial",
+        "columns": "complete",
+        "comments": "unsupported",
+        "foreignKeys": "complete",
+        "indexes": "complete",
+        "primaryKey": "complete",
+        "uniqueConstraints": "complete",
+        "viewDefinition": "complete"
+      },
+      "warnings": [
+        {
+          "aspect": "checkConstraints",
+          "code": "SQLITE_CHECK_CONSTRAINT_PARTIAL",
+          "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete."
+        }
+      ]
+    },
+    "kind": "table",
+    "primaryKey": {
+      "columns": [
+        "id"
+      ]
+    },
+    "schema": "main",
+    "strict": false,
+    "tableName": "mail_outbox",
+    "uniqueConstraints": []
+  }
+}

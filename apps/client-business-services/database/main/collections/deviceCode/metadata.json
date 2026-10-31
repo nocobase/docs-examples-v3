@@ -1,0 +1,40 @@
+{
+  "document": {
+    "fields": {
+      "clientId": {
+        "type": "string"
+      },
+      "deviceCode": {
+        "type": "string"
+      },
+      "expiresAt": {
+        "type": "datetime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "lastPolledAt": {
+        "type": "datetime"
+      },
+      "pollingInterval": {
+        "type": "integer"
+      },
+      "scope": {
+        "type": "text"
+      },
+      "status": {
+        "type": "string"
+      },
+      "userCode": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      }
+    },
+    "name": "deviceCode",
+    "version": 1
+  },
+  "formatVersion": 1,
+  "name": "deviceCode"
+}

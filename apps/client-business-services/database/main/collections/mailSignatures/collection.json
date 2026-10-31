@@ -1,0 +1,343 @@
+{
+  "collection": {
+    "constraints": [
+      {
+        "fields": [
+          "id"
+        ],
+        "type": "primary"
+      },
+      {
+        "fields": [
+          "identityId"
+        ],
+        "onDelete": "cascade",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailIdentities",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      },
+      {
+        "fields": [
+          "accountId"
+        ],
+        "onDelete": "no action",
+        "onUpdate": "no action",
+        "references": {
+          "collection": "mailAccounts",
+          "fields": [
+            "id"
+          ]
+        },
+        "type": "foreignKey"
+      },
+      {
+        "fields": [
+          "defaultForIdentityId"
+        ],
+        "mode": "index",
+        "name": "mail_signatures_default_identity_unique",
+        "type": "unique"
+      },
+      {
+        "fields": [
+          "defaultForAccountId"
+        ],
+        "mode": "index",
+        "name": "mail_signatures_default_account_unique",
+        "type": "unique"
+      },
+      {
+        "fields": [
+          "identityId",
+          "name"
+        ],
+        "mode": "index",
+        "name": "mail_signatures_identity_name_unique",
+        "type": "unique"
+      },
+      {
+        "fields": [
+          "accountId",
+          "name"
+        ],
+        "mode": "index",
+        "name": "mail_signatures_account_name_unique",
+        "type": "unique"
+      }
+    ],
+    "db": {
+      "schema": "main",
+      "strict": false
+    },
+    "fields": [
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "id",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "accountId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "identityId",
+        "nullable": false,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "varchar(255)",
+          "physicalDataType": "string"
+        },
+        "length": 255,
+        "name": "name",
+        "nullable": false,
+        "type": "string"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "text",
+        "nullable": false,
+        "type": "text"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "html",
+        "nullable": true,
+        "type": "text"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "defaultForIdentityId",
+        "nullable": true,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "char(36)",
+          "physicalDataType": "char"
+        },
+        "length": 36,
+        "name": "defaultForAccountId",
+        "nullable": true,
+        "type": "uuid"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "createdAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "autoIncrement": false,
+        "db": {
+          "affinity": "text",
+          "nativeType": "TEXT",
+          "physicalDataType": "text"
+        },
+        "name": "updatedAt",
+        "nullable": false,
+        "type": "datetimeTz"
+      },
+      {
+        "foreignKey": "identityId",
+        "name": "identity",
+        "target": "mailIdentities",
+        "targetKey": "id",
+        "type": "belongsTo"
+      }
+    ],
+    "indexes": [
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "identityId",
+              "order": "asc"
+            }
+          ],
+          "unique": false
+        },
+        "fields": [
+          "identityId"
+        ],
+        "name": "idx_mail_signatures_identity_id",
+        "order": {
+          "identityId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "defaultForIdentityId",
+              "order": "asc"
+            }
+          ],
+          "unique": true
+        },
+        "fields": [
+          "defaultForIdentityId"
+        ],
+        "name": "mail_signatures_default_identity_unique",
+        "order": {
+          "defaultForIdentityId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "defaultForAccountId",
+              "order": "asc"
+            }
+          ],
+          "unique": true
+        },
+        "fields": [
+          "defaultForAccountId"
+        ],
+        "name": "mail_signatures_default_account_unique",
+        "order": {
+          "defaultForAccountId": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "identityId",
+              "order": "asc"
+            },
+            {
+              "field": "name",
+              "order": "asc"
+            }
+          ],
+          "unique": true
+        },
+        "fields": [
+          "identityId",
+          "name"
+        ],
+        "name": "mail_signatures_identity_name_unique",
+        "order": {
+          "identityId": "asc",
+          "name": "asc"
+        }
+      },
+      {
+        "db": {
+          "keys": [
+            {
+              "field": "accountId",
+              "order": "asc"
+            },
+            {
+              "field": "name",
+              "order": "asc"
+            }
+          ],
+          "unique": true
+        },
+        "fields": [
+          "accountId",
+          "name"
+        ],
+        "name": "mail_signatures_account_name_unique",
+        "order": {
+          "accountId": "asc",
+          "name": "asc"
+        }
+      }
+    ],
+    "kind": "table",
+    "name": "mailSignatures",
+    "naming": {
+      "tablePrefix": "",
+      "underscored": true
+    }
+  },
+  "formatVersion": 1,
+  "name": "mailSignatures",
+  "warnings": [
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_PARTIAL",
+      "message": "Physical Schema aspect \"checkConstraints\" is partial.",
+      "path": [
+        "inspection",
+        "aspects",
+        "checkConstraints"
+      ]
+    },
+    {
+      "aspect": "comments",
+      "code": "COLLECTION_INSPECTION_UNSUPPORTED",
+      "message": "Physical Schema aspect \"comments\" is unsupported.",
+      "path": [
+        "inspection",
+        "aspects",
+        "comments"
+      ]
+    },
+    {
+      "aspect": "checkConstraints",
+      "code": "COLLECTION_INSPECTION_WARNING",
+      "message": "SQLite check constraints are parsed from the schema SQL and may be incomplete.",
+      "sourceCode": "SQLITE_CHECK_CONSTRAINT_PARTIAL"
+    }
+  ]
+}
