@@ -37,3 +37,5 @@ See [application conventions](apps/README.md).
 - [Localization](apps/localization/README.MD): product translations, plural counts, formatting, saved language preferences, partial Japanese resources and plugin overrides.
 
 - [Customer Directory](apps/customer-directory/README.md): real data requests, URL query state, submission recovery, permission changes, and pagination correction.
+
+- [Order services](apps/order-services/README.md): reusable server services, real authorization, transactions, application commands and background confirmation jobs.
