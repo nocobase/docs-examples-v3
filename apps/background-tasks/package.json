@@ -1,0 +1,29 @@
+{
+  "name": "background-tasks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@11.7.0",
+  "scripts": {
+    "demo": "tsx scripts/demo.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --outDir dist",
+    "test": "tsx --test tests/*.test.ts",
+    "format:check": "prettier --check server scripts tests package.json tsconfig.json README.md AGENTS.md",
+    "format": "prettier --write server scripts tests package.json tsconfig.json README.md AGENTS.md"
+  },
+  "dependencies": {
+    "@nocobase/app-server": "3.0.0-beta.5",
+    "@nocobase/jobs": "1.0.0-beta.5",
+    "@nocobase/service-provider": "0.0.2-beta.2"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "tsx": "4.21.0",
+    "typescript": "6.0.3",
+    "prettier": "3.9.10"
+  }
+}
