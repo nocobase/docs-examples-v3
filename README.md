@@ -47,3 +47,5 @@ See [application conventions](apps/README.md).
 - [Customer Access](apps/customer-access/README.md): native authentication, independent business actions, owned-record and field policies, and scoped order reassignment.
 
 - [Server localization](apps/server-localization/README.md): report messages in request and recipient languages, real session preferences, plugin overrides and localized API errors.
+
+- [Product acceptance](apps/testing-acceptance/README.md): a real product draft and publication workflow with client, API, database, command and browser tests for the Testing and acceptance guide.
